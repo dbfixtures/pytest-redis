@@ -19,7 +19,7 @@ Feature requests/proposals
 #. Provide as detailed description as possible
     * Use case is great to have
 #. There'll be a bit of discussion for the feature. Don't worry, if it is to be accepted, we'd like to support it, so we need to understand it thoroughly.
-  
+
 
 Pull requests
 -------------
@@ -40,5 +40,5 @@ Commits
 Coding style
 ------------
 
-#. All python coding style are being enforced by `Pylama <https://pypi.python.org/pypi/pylama>`_ and configured in pylama.ini file.
-#. Additional, not always mandatory checks are being performed by `QuantifiedCode <https://www.quantifiedcode.com/app/project/gh:ClearcodeHQ:pytest-redis>`_
+#. Coding style is being handled by black and doublechecked by ruff.
+    * We provide a `pre-commit <https://pre-commit.com/>`_ configuration for invoking these on commit.

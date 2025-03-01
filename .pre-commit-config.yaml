@@ -1,0 +1,62 @@
+---
+ci:
+  skip: [pipenv, mypy]
+
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+minimum_pre_commit_version: 4.0.0
+default_stages: [pre-commit]
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: trailing-whitespace
+      - id: check-toml
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+      - id: check-yaml
+      - id: pretty-format-json
+      - id: detect-private-key
+      - id: debug-statements
+
+  - repo: https://github.com/psf/black
+    rev: 25.1.0
+    hooks:
+      - id: black
+        entry: black --config pyproject.toml .
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.6
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix, --respect-gitignore, --show-fixes]
+
+  - repo: https://github.com/rstcheck/rstcheck
+    rev: v6.2.4
+    hooks:
+      - id: rstcheck
+        additional_dependencies: [sphinx, toml]
+
+  - repo: local
+    hooks:
+      - id: pipenv
+        stages: [pre-commit, manual]
+        language: system
+        name: Install dependencies for the local linters
+        entry: bash -c "pip install pipenv && pipenv install --dev"
+        types_or:
+          - python
+          - toml  # Pipfile
+        pass_filenames: false
+      - id: mypy
+        stages: [pre-commit, manual]
+        name: mypy
+        entry: pipenv run mypy .
+        language: system
+        types_or:
+          - python
+          - toml  # Pipfile
+        pass_filenames: false
