@@ -1,4 +1,4 @@
-.. image:: https://raw.githubusercontent.com/ClearcodeHQ/pytest-redis/master/logo.png
+.. image:: https://raw.githubusercontent.com/dbfixtures/pytest-redis/master/logo.png
     :width: 100px
     :height: 100px
 

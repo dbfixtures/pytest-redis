@@ -31,7 +31,7 @@ Miscellaneus
 Bugfixes
 --------
 
-- Fix compatibility with pytest < 8 (`#677 <https://github.com/ClearcodeHQ/pytest-redis/issues/677>`__)
+- Fix compatibility with pytest < 8 (`#677 <https://github.com/dbfixtures/pytest-redis/issues/677>`__)
 
 
 3.1.1 (2024-06-10)
@@ -41,7 +41,7 @@ Bugfixes
 --------
 
 - Fixed redis factories module, where imports from submodule
-  on the main `factories` level were removed by linter. (`#679 <https://github.com/ClearcodeHQ/pytest-redis/issues/679>`__)
+  on the main `factories` level were removed by linter. (`#679 <https://github.com/dbfixtures/pytest-redis/issues/679>`__)
 
 
 3.1.0 (2024-06-05)
@@ -50,20 +50,20 @@ Bugfixes
 Features
 --------
 
-- Add '--redis-modules' command line option (or 'redis_modules' in .ini file) to specify comma-separated list of Redis extension modules to load (`#656 <https://github.com/ClearcodeHQ/pytest-redis/issues/656>`__)
-- Support Python 3.12 (`#673 <https://github.com/ClearcodeHQ/pytest-redis/issues/673>`__)
+- Add '--redis-modules' command line option (or 'redis_modules' in .ini file) to specify comma-separated list of Redis extension modules to load (`#656 <https://github.com/dbfixtures/pytest-redis/issues/656>`__)
+- Support Python 3.12 (`#673 <https://github.com/dbfixtures/pytest-redis/issues/673>`__)
 
 
 Miscellaneus
 ------------
 
-- Adjusted workflows for actions-reuse 2 (`#481 <https://github.com/ClearcodeHQ/pytest-redis/issues/481>`__)
-- Migrate pydocstyle and pycodestyle to ruff. And use rstcheck to check rst files. (`#484 <https://github.com/ClearcodeHQ/pytest-redis/issues/484>`__)
-- Update code formatting for black 24.1 (`#602 <https://github.com/ClearcodeHQ/pytest-redis/issues/602>`__)
+- Adjusted workflows for actions-reuse 2 (`#481 <https://github.com/dbfixtures/pytest-redis/issues/481>`__)
+- Migrate pydocstyle and pycodestyle to ruff. And use rstcheck to check rst files. (`#484 <https://github.com/dbfixtures/pytest-redis/issues/484>`__)
+- Update code formatting for black 24.1 (`#602 <https://github.com/dbfixtures/pytest-redis/issues/602>`__)
 - Drop Pipfile.lock from repository.
-  Will rely on a cached in Pipeline or artifact. (`#604 <https://github.com/ClearcodeHQ/pytest-redis/issues/604>`__)
-- Drop old install_py test step, that's supposed to install packages for caching purposes. (`#674 <https://github.com/ClearcodeHQ/pytest-redis/issues/674>`__)
-- Test against Redis 7.2 (`#675 <https://github.com/ClearcodeHQ/pytest-redis/issues/675>`__)
+  Will rely on a cached in Pipeline or artifact. (`#604 <https://github.com/dbfixtures/pytest-redis/issues/604>`__)
+- Drop old install_py test step, that's supposed to install packages for caching purposes. (`#674 <https://github.com/dbfixtures/pytest-redis/issues/674>`__)
+- Test against Redis 7.2 (`#675 <https://github.com/dbfixtures/pytest-redis/issues/675>`__)
 
 
 3.0.2 (2023-04-19)
@@ -72,7 +72,7 @@ Miscellaneus
 Bugfixes
 --------
 
-- Include py.typed in MANIFEST.in (`#471 <https://github.com/ClearcodeHQ/pytest-redis/issues/471>`__)
+- Include py.typed in MANIFEST.in (`#471 <https://github.com/dbfixtures/pytest-redis/issues/471>`__)
 
 
 3.0.1 (2023-03-27)
@@ -81,7 +81,7 @@ Bugfixes
 Bugfixes
 --------
 
-- Fixed packaging LICENSE file. (`#453 <https://github.com/ClearcodeHQ/pytest-redis/issues/453>`__)
+- Fixed packaging LICENSE file. (`#453 <https://github.com/dbfixtures/pytest-redis/issues/453>`__)
 
 
 3.0.0 (2023-03-24)
@@ -90,39 +90,39 @@ Bugfixes
 Breaking changes
 ----------------
 
-- Dropped support for Python 3.7 (`#428 <https://github.com/ClearcodeHQ/pytest-redis/issues/428>`__)
+- Dropped support for Python 3.7 (`#428 <https://github.com/dbfixtures/pytest-redis/issues/428>`__)
 
 
 Bugfixes
 --------
 
-- NoopRedis fixture - used to connecto extenrally set up redis, now properly waits till it's ready to accept connections (`#388 <https://github.com/ClearcodeHQ/pytest-redis/issues/388>`__)
+- NoopRedis fixture - used to connecto extenrally set up redis, now properly waits till it's ready to accept connections (`#388 <https://github.com/dbfixtures/pytest-redis/issues/388>`__)
 
 
 Features
 --------
 
-- Use shutilo.where to find redis-server by default (`#374 <https://github.com/ClearcodeHQ/pytest-redis/issues/374>`__)
-- Support for Redis 7 (`#391 <https://github.com/ClearcodeHQ/pytest-redis/issues/391>`__)
-- Added username and password settings used to connect to the redis instances, set up both internally and externally. (`#404 <https://github.com/ClearcodeHQ/pytest-redis/issues/404>`__)
-- Fully type pytest-redis (`#428 <https://github.com/ClearcodeHQ/pytest-redis/issues/428>`__)
-- Support python 3.11 (`#437 <https://github.com/ClearcodeHQ/pytest-redis/issues/437>`__)
+- Use shutilo.where to find redis-server by default (`#374 <https://github.com/dbfixtures/pytest-redis/issues/374>`__)
+- Support for Redis 7 (`#391 <https://github.com/dbfixtures/pytest-redis/issues/391>`__)
+- Added username and password settings used to connect to the redis instances, set up both internally and externally. (`#404 <https://github.com/dbfixtures/pytest-redis/issues/404>`__)
+- Fully type pytest-redis (`#428 <https://github.com/dbfixtures/pytest-redis/issues/428>`__)
+- Support python 3.11 (`#437 <https://github.com/dbfixtures/pytest-redis/issues/437>`__)
 
 
 Miscellaneus
 ------------
 
-- Added py.typed file (`#422 <https://github.com/ClearcodeHQ/pytest-redis/issues/422>`__)
-- Added towncrier to manage newsfragment/CHANGELOG (`#424 <https://github.com/ClearcodeHQ/pytest-redis/issues/424>`__)
-- Migrate dependency management to pipenv (`#425 <https://github.com/ClearcodeHQ/pytest-redis/issues/425>`__)
-- Moved most of the project's packaging and configuration to pyproject.toml (`#426 <https://github.com/ClearcodeHQ/pytest-redis/issues/426>`__)
-- Migrate automerge to a shared workflow based on application token management. (`#427 <https://github.com/ClearcodeHQ/pytest-redis/issues/427>`__)
-- Added mypy checks for CI (`#428 <https://github.com/ClearcodeHQ/pytest-redis/issues/428>`__)
-- Use tbump instead of bumpversion to manage release process (`#429 <https://github.com/ClearcodeHQ/pytest-redis/issues/429>`__)
-- Remove Redis versions older nat 6.0.x from CI as they have reached EOL. (`#445 <https://github.com/ClearcodeHQ/pytest-redis/issues/445>`__)
+- Added py.typed file (`#422 <https://github.com/dbfixtures/pytest-redis/issues/422>`__)
+- Added towncrier to manage newsfragment/CHANGELOG (`#424 <https://github.com/dbfixtures/pytest-redis/issues/424>`__)
+- Migrate dependency management to pipenv (`#425 <https://github.com/dbfixtures/pytest-redis/issues/425>`__)
+- Moved most of the project's packaging and configuration to pyproject.toml (`#426 <https://github.com/dbfixtures/pytest-redis/issues/426>`__)
+- Migrate automerge to a shared workflow based on application token management. (`#427 <https://github.com/dbfixtures/pytest-redis/issues/427>`__)
+- Added mypy checks for CI (`#428 <https://github.com/dbfixtures/pytest-redis/issues/428>`__)
+- Use tbump instead of bumpversion to manage release process (`#429 <https://github.com/dbfixtures/pytest-redis/issues/429>`__)
+- Remove Redis versions older nat 6.0.x from CI as they have reached EOL. (`#445 <https://github.com/dbfixtures/pytest-redis/issues/445>`__)
 - Removed the bit hidden ability to select over Redis/StrictRedis client for client fixture.
-  For a long time both were same client already. (`#447 <https://github.com/ClearcodeHQ/pytest-redis/issues/447>`__)
-- Split bigger code modules into smaller chunks. (`#452 <https://github.com/ClearcodeHQ/pytest-redis/issues/452>`__)
+  For a long time both were same client already. (`#447 <https://github.com/dbfixtures/pytest-redis/issues/447>`__)
+- Split bigger code modules into smaller chunks. (`#452 <https://github.com/dbfixtures/pytest-redis/issues/452>`__)
 
 
 2.4.0
