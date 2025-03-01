@@ -36,9 +36,9 @@ dependencies = [
 requires-python = ">= 3.9"
 
 [project.urls]
-"Source" = "https://github.com/ClearcodeHQ/pytest-redis"
-"Bug Tracker" = "https://github.com/ClearcodeHQ/pytest-redis/issues"
-"Changelog" = "https://github.com/ClearcodeHQ/pytest-redis/blob/v3.1.3/CHANGES.rst"
+"Source" = "https://github.com/dbfixtures/pytest-redis"
+"Bug Tracker" = "https://github.com/dbfixtures/pytest-redis/issues"
+"Changelog" = "https://github.com/dbfixtures/pytest-redis/blob/v3.1.3/CHANGES.rst"
 
 [project.entry-points."pytest11"]
 pytest_redis = "pytest_redis.plugin"
@@ -82,7 +82,7 @@ report_level = "warning"
 directory = "newsfragments"
 single_file=true
 filename="CHANGES.rst"
-issue_format="`#{issue} <https://github.com/ClearcodeHQ/pytest-redis/issues/{issue}>`__"
+issue_format="`#{issue} <https://github.com/dbfixtures/pytest-redis/issues/{issue}>`__"
 
 [tool.towncrier.fragment.feature]
 name = "Features"
@@ -102,7 +102,7 @@ showcontent = true
 
 [tool.tbump]
 # Uncomment this if your project is hosted on GitHub:
-# github_url = "https://github.com/ClearcodeHQ/pytest-dynamodb/"
+# github_url = "https://github.com/dbfixtures/pytest-dynamodb/"
 
 [tool.tbump.version]
 current = "3.1.3"
@@ -144,7 +144,7 @@ search = 'version = "{current_version}"'
 
 [[tool.tbump.file]]
 src = "pyproject.toml"
-search = '"Changelog" = "https://github.com/ClearcodeHQ/pytest-redis/blob/v{current_version}/CHANGES.rst"'
+search = '"Changelog" = "https://github.com/dbfixtures/pytest-redis/blob/v{current_version}/CHANGES.rst"'
 
 # You can specify a list of commands to
 # run after the files have been patched
