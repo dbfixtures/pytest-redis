@@ -12,7 +12,7 @@ from pytest_redis.executor import NoopRedis, RedisExecutor
 
 def redisdb_async(
     process_fixture_name: str, dbnum: int = 0, decode: Optional[bool] = None
-) -> Callable[[FixtureRequest], AsyncGenerator[Redis, None, None]]:
+) -> Callable[[FixtureRequest], AsyncGenerator[Redis]]:
     """Create connection fixture factory for pytest-redis.
 
     :param process_fixture_name: name of the process fixture
@@ -23,7 +23,7 @@ def redisdb_async(
     """
 
     @pytest.fixture
-    async def async_redisdb_factory(request: FixtureRequest) -> AsyncGenerator[Redis, None, None]:
+    async def async_redisdb_factory(request: FixtureRequest) -> AsyncGenerator[Redis]:
         """Create connection for pytest-redis.
 
         #. Load required process fixture.
