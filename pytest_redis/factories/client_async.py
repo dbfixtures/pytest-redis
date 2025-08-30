@@ -1,18 +1,18 @@
 """Redis async client fixture factory."""
 
-from typing import Callable, Generator, Literal, Optional, Union
+from typing import AsyncGenerator, Callable, Literal, Optional, Union
 
 import pytest
-import redis.asyncio import Redis
+from redis.asyncio import Redis
 from _pytest.fixtures import FixtureRequest
 
 from pytest_redis.config import get_config
 from pytest_redis.executor import NoopRedis, RedisExecutor
 
 
-def async_redisdb(
+def redisdb_async(
     process_fixture_name: str, dbnum: int = 0, decode: Optional[bool] = None
-) -> Callable[[FixtureRequest], Generator[redis.Redis, None, None]]:
+) -> Callable[[FixtureRequest], AsyncGenerator[Redis, None, None]]:
     """Create connection fixture factory for pytest-redis.
 
     :param process_fixture_name: name of the process fixture
@@ -23,7 +23,7 @@ def async_redisdb(
     """
 
     @pytest.fixture
-    async def async_redisdb_factory(request: FixtureRequest) -> Generator[redis.Redis, None, None]:
+    async def async_redisdb_factory(request: FixtureRequest) -> AsyncGenerator[Redis, None, None]:
         """Create connection for pytest-redis.
 
         #. Load required process fixture.
@@ -49,7 +49,7 @@ def async_redisdb(
             decode if decode is not None else config["decode"]
         )
 
-        redis_client = redis.Redis(
+        redis_client = Redis(
             redis_host,
             redis_port,
             redis_db,
