@@ -3,8 +3,8 @@
 from typing import AsyncGenerator, Callable, Literal, Optional, Union
 
 import pytest
-from redis.asyncio import Redis
 from _pytest.fixtures import FixtureRequest
+from redis.asyncio import Redis
 
 from pytest_redis.config import get_config
 from pytest_redis.executor import NoopRedis, RedisExecutor

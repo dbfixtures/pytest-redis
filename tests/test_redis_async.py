@@ -1,6 +1,6 @@
 """Module containing all tests for pytest-redis."""
-import pytest
 
+import pytest
 from redis.asyncio import Redis
 
 
