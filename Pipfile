@@ -10,7 +10,7 @@ mirakuru = "==2.6.1"
 redis = "==6.4.0"
 
 [dev-packages]
-towncrier = "==24.8.0"
+towncrier = "==25.8.0"
 pytest-cov = "==6.2.1"
 pytest-xdist = "==3.8.0"
 mock = "==5.2.0"
