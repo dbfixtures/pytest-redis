@@ -1,7 +1,6 @@
 """Reddis class respsenting an instance started by a third party."""
 
 import socket
-from typing import Optional
 
 from mirakuru import TCPExecutor
 
@@ -13,9 +12,9 @@ class NoopRedis(TCPExecutor):
         self,
         host: str,
         port: int,
-        username: Optional[str] = None,
-        password: Optional[str] = None,
-        unixsocket: Optional[str] = None,
+        username: str | None = None,
+        password: str | None = None,
+        unixsocket: str | None = None,
         startup_timeout: int = 15,
     ) -> None:
         """Init method of NoopRedis.

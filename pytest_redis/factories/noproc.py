@@ -1,6 +1,6 @@
 """Redis noop fixture factory."""
 
-from typing import Callable, Generator, Optional
+from typing import Callable, Generator
 
 import pytest
 from _pytest.fixtures import FixtureRequest
@@ -10,10 +10,10 @@ from pytest_redis.executor import NoopRedis
 
 
 def redis_noproc(
-    host: Optional[str] = None,
-    port: Optional[int] = None,
-    username: Optional[str] = None,
-    password: Optional[str] = None,
+    host: str | None = None,
+    port: int | None = None,
+    username: str | None = None,
+    password: str | None = None,
     startup_timeout: int = 15,
 ) -> Callable[[FixtureRequest], Generator[NoopRedis, None, None]]:
     """Nooproc fixture factory for pytest-redis.

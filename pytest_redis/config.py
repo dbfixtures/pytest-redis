@@ -1,6 +1,6 @@
 """Config loading helpers."""
 
-from typing import Any, List, Optional, TypedDict
+from typing import Any, TypedDict
 
 from _pytest.fixtures import FixtureRequest
 
@@ -9,7 +9,7 @@ class RedisConfigType(TypedDict):
     """Pytest redis config definition type."""
 
     host: str
-    port: Optional[int]
+    port: int | None
     username: str
     password: str
     exec: str
@@ -22,7 +22,7 @@ class RedisConfigType(TypedDict):
     syslog: bool
     decode: bool
     datadir: str
-    modules: List[str]
+    modules: list[str]
 
 
 def get_config(request: FixtureRequest) -> RedisConfigType:

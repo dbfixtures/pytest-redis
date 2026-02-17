@@ -2,7 +2,7 @@
 
 import socket
 from io import StringIO
-from typing import Any, Dict, Literal
+from typing import Any, Literal
 
 import pytest
 import redis
@@ -35,7 +35,7 @@ from pytest_redis.executor.process import extract_version
 def test_redis_exec_configuration(
     request: FixtureRequest,
     tmp_path_factory: TempPathFactory,
-    parameter: Dict[str, Any],
+    parameter: dict[str, Any],
     config_option: str,
     value: str,
 ) -> None:
