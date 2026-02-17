@@ -40,6 +40,11 @@ repos:
       - id: rstcheck
         additional_dependencies: [sphinx, toml]
 
+  - repo: https://github.com/fizyk/pyproject-validator
+    rev: v0.1.0
+    hooks:
+      - id: check-python-version-consistency
+
   - repo: local
     hooks:
       - id: pipenv
