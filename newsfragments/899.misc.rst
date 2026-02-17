@@ -1,0 +1,1 @@
+Validate package configuration against supported and required python versions in pre-commit.
