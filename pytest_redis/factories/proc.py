@@ -74,6 +74,7 @@ def redis_proc(
         redis_exec = executable or config["exec"]
         rdbcompression: bool = config["compression"] if compression is None else compression
         rdbchecksum: bool = config["rdbchecksum"] if checksum is None else checksum
+        syslog_enabled: bool = config["syslog"] if syslog is None else syslog
 
         if datadir:
             redis_datadir = Path(datadir)
@@ -93,7 +94,7 @@ def redis_proc(
             loglevel=loglevel or config["loglevel"],
             rdbcompression=rdbcompression,
             rdbchecksum=rdbchecksum,
-            syslog_enabled=syslog or config["syslog"],
+            syslog_enabled=syslog_enabled,
             save=save or config["save"],
             host=host or config["host"],
             port=redis_port,
