@@ -1,44 +1,32 @@
 """Redis process fixture factory."""
 
 from pathlib import Path
-from typing import Callable, Generator, List, Optional, Set, Tuple, Union
+from typing import Callable, Generator
 
 import pytest
 from _pytest.fixtures import FixtureRequest
 from _pytest.tmpdir import TempPathFactory
-from port_for import get_port
+from port_for import PortType, get_port
 
 from pytest_redis.config import get_config
 from pytest_redis.executor import RedisExecutor
 
 
 def redis_proc(
-    executable: Optional[str] = None,
-    timeout: Optional[int] = None,
-    host: Optional[str] = None,
-    port: Union[
-        None,
-        str,
-        int,
-        Tuple[int, int],
-        Set[int],
-        List[str],
-        List[int],
-        List[Tuple[int, int]],
-        List[Set[int]],
-        List[Union[Set[int], Tuple[int, int]]],
-        List[Union[str, int, Tuple[int, int], Set[int]]],
-    ] = -1,
-    username: Optional[str] = None,
-    password: Optional[str] = None,
-    db_count: Optional[int] = None,
-    save: Optional[str] = None,
-    compression: Optional[bool] = None,
-    checksum: Optional[bool] = None,
-    syslog: Optional[bool] = None,
-    loglevel: Optional[str] = None,
-    datadir: Optional[str] = None,
-    modules: Optional[List[str]] = None,
+    executable: str | None = None,
+    timeout: int | None = None,
+    host: str | None = None,
+    port: PortType = -1,
+    username: str | None = None,
+    password: str | None = None,
+    db_count: int | None = None,
+    save: str | None = None,
+    compression: bool | None = None,
+    checksum: bool | None = None,
+    syslog: bool | None = None,
+    loglevel: str | None = None,
+    datadir: str | None = None,
+    modules: list[str] | None = None,
 ) -> Callable[[FixtureRequest, TempPathFactory], Generator[RedisExecutor, None, None]]:
     """Fixture factory for pytest-redis.
 

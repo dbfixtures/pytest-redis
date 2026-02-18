@@ -6,7 +6,7 @@ import re
 from itertools import islice
 from pathlib import Path
 from tempfile import gettempdir
-from typing import Any, List, Literal, Optional
+from typing import Any, Literal
 
 from mirakuru import TCPExecutor
 from packaging.version import Version, parse
@@ -48,8 +48,8 @@ class RedisExecutor(TCPExecutor):
         loglevel: str,
         host: str,
         port: int,
-        username: Optional[str] = None,
-        password: Optional[str] = None,
+        username: str | None = None,
+        password: str | None = None,
         startup_timeout: int = 60,
         save: str = "",
         daemonize: str = "no",
@@ -57,8 +57,8 @@ class RedisExecutor(TCPExecutor):
         rdbchecksum: bool = False,
         syslog_enabled: bool = False,
         appendonly: str = "no",
-        datadir: Optional[Path] = None,
-        modules: Optional[List[str]] = None,
+        datadir: Path | None = None,
+        modules: list[str] | None = None,
     ) -> None:  # pylint:disable=too-many-locals
         """Init method of a RedisExecutor.
 

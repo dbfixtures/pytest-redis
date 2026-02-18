@@ -1,6 +1,6 @@
 """Redis client fixture factory."""
 
-from typing import Callable, Generator, Literal, Optional, Union
+from typing import Callable, Generator, Literal
 
 import pytest
 import redis
@@ -11,7 +11,7 @@ from pytest_redis.executor import NoopRedis, RedisExecutor
 
 
 def redisdb(
-    process_fixture_name: str, dbnum: int = 0, decode: Optional[bool] = None
+    process_fixture_name: str, dbnum: int = 0, decode: bool | None = None
 ) -> Callable[[FixtureRequest], Generator[redis.Redis, None, None]]:
     """Create connection fixture factory for pytest-redis.
 
@@ -35,9 +35,7 @@ def redisdb(
         :rtype: redis.client.Redis
         :returns: Redis client
         """
-        proc_fixture: Union[NoopRedis, RedisExecutor] = request.getfixturevalue(
-            process_fixture_name
-        )
+        proc_fixture: NoopRedis | RedisExecutor = request.getfixturevalue(process_fixture_name)
         config = get_config(request)
 
         redis_host = proc_fixture.host
@@ -45,7 +43,7 @@ def redisdb(
         redis_username = proc_fixture.username
         redis_password = proc_fixture.password
         redis_db = dbnum
-        decode_responses: Union[Literal[True], Literal[False]] = (
+        decode_responses: Literal[True] | Literal[False] = (
             decode if decode is not None else config["decode"]
         )
 
