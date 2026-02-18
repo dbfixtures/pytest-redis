@@ -1,0 +1,2 @@
+Fixed an issue where setting ``syslog`` parameter to ``False`` on a fixture, would have the same effect as ``None``, in which case,
+the value used would be deferred to the configured one, which could be set to ``True``.

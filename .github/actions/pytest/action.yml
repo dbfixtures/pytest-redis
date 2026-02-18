@@ -36,6 +36,6 @@ runs:
     uses: codecov/codecov-action@v5
     with:
       flags: linux,redis-${{ inputs.redis }}
-      env_vars: OS, PYTHON
+      env_vars: OS,PYTHON
       fail_ci_if_error: false
       token: ${{ inputs.codecov_token }}
