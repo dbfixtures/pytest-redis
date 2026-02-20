@@ -1,0 +1,65 @@
+name: Run pytest tests
+
+on:
+  workflow_call:
+    inputs:
+      python-versions:
+        description: 'Supported python versions'
+        default: '["3.10", "3.11", "3.12", "3.13", "3.14", "pypy-3.11"]'
+        required: false
+        type: string
+      redis-versions:
+        description: 'Redis versions'
+        required: true
+        type: string
+      os:
+        description: 'Operating system to run tests on'
+        default: 'ubuntu-latest'
+        required: false
+        type: string
+    secrets:
+      codecov_token:
+        description: 'Codecov token'
+        required: false
+
+
+jobs:
+  redis:
+    runs-on: ${{ inputs.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ${{ fromJSON(inputs.python-versions) }}
+        redis-version: ${{ fromJSON(inputs.redis-versions) }}
+    env:
+      OS: ${{ inputs.os }}
+      PYTHON: ${{ matrix.python-version }}
+      REDIS_VERSION: ${{ matrix.redis-version }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Cache Redis builds
+        uses: actions/cache@v5
+        with:
+          path: ~/redis
+          key: redis-${{ hashFiles('.download-redis.sh') }}
+      - name: Run test on Redis ${{ matrix.redis-version }}
+        uses: fizyk/actions-reuse/.github/actions/pipenv@v4.4.0
+        with:
+          python-version: ${{ matrix.python-version }}
+          command: pytest -n 0 --cov-report=xml --redis-exec=$HOME/redis/redis-${{ matrix.redis-version }}/src/redis-server
+          allow-prereleases: true
+      - name: Run xdist test on Redis ${{ matrix.redis-version }}
+        uses: fizyk/actions-reuse/.github/actions/pipenv-run@v4.4.0
+        with:
+          command: pytest -n 1 --cov-report=xml:coverage-xdist.xml --redis-exec=$HOME/redis/redis-${{ matrix.redis-version }}/src/redis-server
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          flags: linux,redis-${{ matrix.redis-version }}
+          env_vars: OS,PYTHON,REDIS_VERSION
+          fail_ci_if_error: false
+          token: ${{ secrets.codecov_token }}
