@@ -55,10 +55,10 @@ include = ["pytest_redis*"]
 exclude = ["tests*"]
 namespaces = false
 
-[tool.pytest.ini_options]
+[tool.pytest]
 xfail_strict=true
-addopts = "--max-worker-restart=0 --showlocals --verbose --cov"
-testpaths = "tests"
+addopts = ["--max-worker-restart=0", "--showlocals", "--verbose", "--cov"]
+testpaths = ["tests"]
 
 [tool.black]
 line-length = 100
