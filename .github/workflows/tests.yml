@@ -3,10 +3,6 @@ name: Run tests
 on:
   push:
     branches: [ main ]
-    paths:
-      - '**.py'
-      - .github/workflows/tests.yml
-      - requirements-test.txt
   pull_request:
     branches: [ main ]
 
@@ -22,54 +18,18 @@ jobs:
         key: redis-${{ hashFiles('.download-redis.sh') }}
     - name: Download and build Redis
       run: ./.download-redis.sh
-  tests_7_4:
+  tests_7:
     needs: [download_redis]
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14", "pypy-3.11"]
-    env:
-      OS: ubuntu-latest
-      PYTHON: ${{ matrix.python-version }}
-    steps:
-      - uses: actions/checkout@v6
-      - uses: ./.github/actions/pytest
-        with:
-          python-version: ${{ matrix.python-version }}
-          redis: "7.4"
-          codecov_token: ${{ secrets.CODECOV_TOKEN }}
-  tests_7_2:
-    needs: [tests_7_4]
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        python-version: ["3.11", "3.12", "3.13", "3.14", "pypy-3.11"]
-    env:
-      OS: ubuntu-latest
-      PYTHON: ${{ matrix.python-version }}
-    steps:
-      - uses: actions/checkout@v6
-      - uses: ./.github/actions/pytest
-        with:
-          python-version: ${{ matrix.python-version }}
-          redis: "7.2"
-          codecov_token: ${{ secrets.CODECOV_TOKEN }}
-  tests_6_2:
+    uses: ./.github/workflows/single-redis.yml
+    with:
+      redis-versions: '["7.4"]'
+    secrets:
+      codecov_token: ${{ secrets.CODECOV_TOKEN }}
+  tests_older:
     needs: [download_redis]
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        python-version: ["3.11", "3.12", "3.13", "3.14", "pypy-3.11"]
-    env:
-      OS: ubuntu-latest
-      PYTHON: ${{ matrix.python-version }}
-    steps:
-      - uses: actions/checkout@v6
-      - uses: ./.github/actions/pytest
-        with:
-          python-version: ${{ matrix.python-version }}
-          redis: "6.2"
-          codecov_token: ${{ secrets.CODECOV_TOKEN }}
+    uses: ./.github/workflows/single-redis.yml
+    with:
+      python-versions: '["3.13", "3.14"]'
+      redis-versions: '["6.2", "7.2"]'
+    secrets:
+      codecov_token: ${{ secrets.CODECOV_TOKEN }}
