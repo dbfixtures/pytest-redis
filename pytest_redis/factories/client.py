@@ -18,7 +18,7 @@ def redisdb(
     :param process_fixture_name: name of the process fixture
     :param dbnum: number of database to use
     :param decode: Client: to decode response or not.
-        See redis.StrictRedis decode_reponse client parameter.
+        See redis.StrictRedis decode_response client parameter.
     :returns: function which makes a connection to redis
     """
 

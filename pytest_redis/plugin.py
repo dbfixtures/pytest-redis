@@ -39,7 +39,7 @@ _help_rdbchecksum = "Whether to add checksum to the rdb files"
 _help_syslog = "Whether to enable logging to the system logger"
 _help_save = "Redis persistance frequency configuration - seconds keys"
 _help_decode = (
-    "Client: to decode response or not. " "See redis.StrictRedis decode_reponse client parameter."
+    "Client: to decode response or not. See redis.StrictRedis decode_response client parameter."
 )
 _help_datadir = "Directory where test Redis instance data files will be stored"
 _help_modules = "Comma separated list of paths to Redis extension modules to be loaded at startup"
