@@ -1,0 +1,3 @@
+Run xdist test with `n auto` flag.
+
+This actually runs tests on several workers which makes it more likely to detect any bugs when running tests.

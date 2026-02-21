@@ -12,6 +12,7 @@ class RedisConfig:
 
     host: str
     port: int | None
+    port_search_count: int
     username: str
     password: str
     exec: str
@@ -42,6 +43,7 @@ def get_config(request: FixtureRequest) -> RedisConfig:
     return RedisConfig(
         host=get_conf_option("host"),
         port=int(port) if port else None,
+        port_search_count=int(get_conf_option("port_search_count")),
         username=get_conf_option("username"),
         password=get_conf_option("password"),
         exec=get_conf_option("exec"),
