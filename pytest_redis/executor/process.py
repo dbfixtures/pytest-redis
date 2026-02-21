@@ -131,12 +131,12 @@ class RedisExecutor(TCPExecutor):
         if save:
             if self.version < parse("7"):
                 save_parts = save.split()
-                assert all(
-                    (part.isdigit() for part in save_parts)
-                ), "all save arguments should be numbers"
-                assert (
-                    len(save_parts) % 2 == 0
-                ), "there should be even number of elements passed to save"
+                assert all((part.isdigit() for part in save_parts)), (
+                    "all save arguments should be numbers"
+                )
+                assert len(save_parts) % 2 == 0, (
+                    "there should be even number of elements passed to save"
+                )
                 for time, change in zip(
                     islice(save_parts, 0, None, 2), islice(save_parts, 1, None, 2)
                 ):
@@ -187,8 +187,7 @@ class RedisExecutor(TCPExecutor):
             version_string = version_output.read()
         if not version_string:
             raise RedisMisconfigured(
-                f"Bad path to redis_exec is given:"
-                f" {self.executable} not exists or wrong program"
+                f"Bad path to redis_exec is given: {self.executable} not exists or wrong program"
             )
 
         return extract_version(version_string)
