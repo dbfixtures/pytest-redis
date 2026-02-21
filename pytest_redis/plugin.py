@@ -29,6 +29,7 @@ import pytest_redis.factories.proc
 _help_exec = "Redis server executable"
 _help_host = "Host at which Redis will accept connections"
 _help_port = "Port at which Redis will accept connections"
+_help_port_search_count = "Number of times pytest-redis will search for a free port"
 _help_username = "Username used to authenticate to Redis"
 _help_password = "Password used to authenticate to Redis"
 _help_timeout = "Client's connection timeout in seconds"
@@ -53,6 +54,9 @@ def pytest_addoption(parser: Parser) -> None:
         name="redis_port",
         help=_help_port,
         default=None,
+    )
+    parser.addini(
+        name="redis_port_search_count", type="int", help=_help_port_search_count, default=5
     )
     parser.addini(
         name="redis_username",
@@ -104,6 +108,13 @@ def pytest_addoption(parser: Parser) -> None:
         help=_help_host,
     )
     parser.addoption("--redis-port", action="store", dest="redis_port", help=_help_port)
+    parser.addoption(
+        "--redis-port-search-count",
+        action="store",
+        type=int,
+        dest="redis_port_search_count",
+        help=_help_port_search_count,
+    )
     parser.addoption("--redis-username", action="store", dest="redis_username", help=_help_username)
     parser.addoption("--redis-password", action="store", dest="redis_password", help=_help_password)
     parser.addoption("--redis-timeout", action="store", dest="redis_timeout", help=_help_timeout)

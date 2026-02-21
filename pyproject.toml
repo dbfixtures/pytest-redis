@@ -57,7 +57,7 @@ namespaces = false
 
 [tool.pytest]
 xfail_strict=true
-addopts = ["--max-worker-restart=0", "--showlocals", "--verbose", "--cov"]
+addopts = ["--showlocals", "--verbose", "--cov"]
 testpaths = ["tests"]
 
 [tool.ruff]

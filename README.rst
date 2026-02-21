@@ -170,6 +170,12 @@ You can pick which you prefer, but remember that these settings are handled in t
      - redis_port
      - port
      - random
+   * - Free port search count
+     - port_search_count
+     - --redis-port-search-count
+     - redis_port_search_count
+     - -
+     - 5
    * - username
      - username
      - --redis-username
