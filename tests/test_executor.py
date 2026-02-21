@@ -49,12 +49,12 @@ def test_redis_exec_configuration(
     redis_port = get_port(None)
     assert redis_port
     redis_exec = RedisExecutor(
-        executable=config["exec"],
+        executable=config.exec,
         databases=4,
-        redis_timeout=config["timeout"],
-        loglevel=config["loglevel"],
+        redis_timeout=config.timeout,
+        loglevel=config.loglevel,
         port=redis_port,
-        host=config["host"],
+        host=config.host,
         startup_timeout=30,
         datadir=tmpdir,
         **parameter,
@@ -80,12 +80,12 @@ def test_redis_exec(
     redis_port = get_port(None)
     assert redis_port
     redis_exec = RedisExecutor(
-        executable=config["exec"],
+        executable=config.exec,
         databases=4,
-        redis_timeout=config["timeout"],
-        loglevel=config["loglevel"],
+        redis_timeout=config.timeout,
+        loglevel=config.loglevel,
         port=redis_port,
-        host=config["host"],
+        host=config.host,
         startup_timeout=30,
         datadir=tmpdir,
         syslog_enabled=syslog_enabled,
@@ -134,12 +134,12 @@ def test_old_redis_version(
             redis_port = get_port(None)
             assert redis_port
             RedisExecutor(
-                config["exec"],
+                config.exec,
                 databases=4,
-                redis_timeout=config["timeout"],
-                loglevel=config["loglevel"],
+                redis_timeout=config.timeout,
+                loglevel=config.loglevel,
                 port=redis_port,
-                host=config["host"],
+                host=config.host,
                 startup_timeout=30,
                 datadir=tmpdir,
             ).start()
@@ -155,10 +155,10 @@ def test_not_existing_redis(request: FixtureRequest, tmp_path_factory: TempPathF
         RedisExecutor(
             "/not/redis/here/redis-server",
             databases=4,
-            redis_timeout=config["timeout"],
-            loglevel=config["loglevel"],
+            redis_timeout=config.timeout,
+            loglevel=config.loglevel,
             port=redis_port,
-            host=config["host"],
+            host=config.host,
             startup_timeout=30,
             datadir=tmpdir,
         ).start()
@@ -172,12 +172,12 @@ def test_too_long_unixsocket(request: FixtureRequest, tmp_path_factory: TempPath
         redis_port = get_port(None)
         assert redis_port
         RedisExecutor(
-            config["exec"],
+            config.exec,
             databases=4,
-            redis_timeout=config["timeout"],
-            loglevel=config["loglevel"],
+            redis_timeout=config.timeout,
+            loglevel=config.loglevel,
             port=redis_port,
-            host=config["host"],
+            host=config.host,
             startup_timeout=30,
             datadir=tmpdir,
         ).start()
@@ -228,12 +228,12 @@ def test_redis_modules_option(request: FixtureRequest, tmp_path_factory: TempPat
     assert redis_port
 
     redis_exec = RedisExecutor(
-        executable=config["exec"],
+        executable=config.exec,
         databases=4,
-        redis_timeout=config["timeout"],
-        loglevel=config["loglevel"],
+        redis_timeout=config.timeout,
+        loglevel=config.loglevel,
         port=redis_port,
-        host=config["host"],
+        host=config.host,
         startup_timeout=30,
         datadir=tmpdir,
         modules=["nonexistent.so", "nonexistent2.so"],

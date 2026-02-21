@@ -38,10 +38,10 @@ def redis_noproc(
         """
         config = get_config(request)
         redis_noopexecutor = NoopRedis(
-            host=host or config["host"],
-            port=port or config["port"] or 6379,
-            username=username or config["username"],
-            password=password or config["password"],
+            host=host or config.host,
+            port=port or config.port or 6379,
+            username=username or config.username,
+            password=password or config.password,
             unixsocket=None,
             startup_timeout=startup_timeout,
         )

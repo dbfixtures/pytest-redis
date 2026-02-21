@@ -71,35 +71,35 @@ def redis_proc(
         :returns: tcp executor
         """
         config = get_config(request)
-        redis_exec = executable or config["exec"]
-        rdbcompression: bool = config["compression"] if compression is None else compression
-        rdbchecksum: bool = config["rdbchecksum"] if checksum is None else checksum
-        syslog_enabled: bool = config["syslog"] if syslog is None else syslog
+        redis_exec = executable or config.exec
+        rdbcompression: bool = config.compression if compression is None else compression
+        rdbchecksum: bool = config.rdbchecksum if checksum is None else checksum
+        syslog_enabled: bool = config.syslog if syslog is None else syslog
 
         if datadir:
             redis_datadir = Path(datadir)
-        elif config["datadir"]:
-            redis_datadir = Path(config["datadir"])
+        elif config.datadir:
+            redis_datadir = Path(config.datadir)
         else:
             redis_datadir = tmp_path_factory.mktemp(f"pytest-redis-{request.fixturename}")
 
-        redis_modules = modules or config["modules"]
+        redis_modules = modules or config.modules
 
-        redis_port = get_port(port) or get_port(config["port"])
+        redis_port = get_port(port) or get_port(config.port)
         assert redis_port
         redis_executor = RedisExecutor(
             executable=redis_exec,
-            databases=db_count or config["db_count"],
-            redis_timeout=timeout or config["timeout"],
-            loglevel=loglevel or config["loglevel"],
+            databases=db_count or config.db_count,
+            redis_timeout=timeout or config.timeout,
+            loglevel=loglevel or config.loglevel,
             rdbcompression=rdbcompression,
             rdbchecksum=rdbchecksum,
             syslog_enabled=syslog_enabled,
-            save=save or config["save"],
-            host=host or config["host"],
+            save=save or config.save,
+            host=host or config.host,
             port=redis_port,
-            username=username or config["username"],
-            password=password or config["password"],
+            username=username or config.username,
+            password=password or config.password,
             startup_timeout=60,
             datadir=redis_datadir,
             modules=redis_modules,
