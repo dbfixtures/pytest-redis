@@ -44,7 +44,7 @@ def redisdb(
         redis_password = proc_fixture.password
         redis_db = dbnum
         decode_responses: Literal[True] | Literal[False] = (
-            decode if decode is not None else config["decode"]
+            decode if decode is not None else config.decode
         )
 
         redis_client = redis.Redis(

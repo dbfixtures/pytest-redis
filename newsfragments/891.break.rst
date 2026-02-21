@@ -1,0 +1,4 @@
+RedisConfigType (TypedDict) is removed and replaced by the RedisConfig dataclass.
+
+Update callers of get_config to expect and handle a RedisConfig return value, switch access from config["key"] to config.key,
+and replace any RedisConfigType imports with RedisConfig.
