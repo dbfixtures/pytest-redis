@@ -1,0 +1,1 @@
+Add release workflow to ease release process
