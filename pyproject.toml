@@ -28,10 +28,10 @@ classifiers = [
     "Framework :: Pytest",
 ]
 dependencies = [
-    "pytest >= 6.2",
-    "port-for >= 0.6.0",
-    "mirakuru",
-    "redis >= 3",
+    "pytest >= 8.4.0",
+    "port-for >= 0.7.3",
+    "mirakuru >= 2.6.0",
+    "redis >= 4.1.0",
 ]
 requires-python = ">= 3.10"
 

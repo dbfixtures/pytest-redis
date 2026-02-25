@@ -33,3 +33,11 @@ jobs:
       redis-versions: '["6.2", "7.2"]'
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
+  tests_oldest:
+    needs: [download_redis]
+    uses: ./.github/workflows/single-redis-oldest.yml
+    with:
+      python-versions: '["3.10", "3.14"]'
+      redis-versions: '["6.2", "7.2"]'
+    secrets:
+      codecov_token: ${{ secrets.CODECOV_TOKEN }}
