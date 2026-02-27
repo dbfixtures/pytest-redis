@@ -3,7 +3,6 @@
 import warnings
 
 import pytest_redis.factories
-from pytest_redis.plugin import *  # noqa: F403
 
 warnings.filterwarnings(
     "error", category=DeprecationWarning, module="(_pytest|pytest|redis|path|mirakuru).*"
