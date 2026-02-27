@@ -18,11 +18,11 @@ jobs:
         key: redis-${{ hashFiles('.download-redis.sh') }}
     - name: Download and build Redis
       run: ./.download-redis.sh
-  tests_7:
+  tests:
     needs: [download_redis]
     uses: ./.github/workflows/single-redis.yml
     with:
-      redis-versions: '["7.4"]'
+      redis-versions: '["8.4", "8.6"]'
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
   tests_older:
@@ -30,7 +30,7 @@ jobs:
     uses: ./.github/workflows/single-redis.yml
     with:
       python-versions: '["3.13", "3.14"]'
-      redis-versions: '["6.2", "7.2"]'
+      redis-versions: '["6.2", "7.2", "7.4", "8.2"]'
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
   tests_oldest:
@@ -38,6 +38,6 @@ jobs:
     uses: ./.github/workflows/single-redis-oldest.yml
     with:
       python-versions: '["3.10", "3.14"]'
-      redis-versions: '["6.2", "7.2"]'
+      redis-versions: '["6.2", "7.2", "8.2"]'
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}

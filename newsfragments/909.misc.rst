@@ -1,0 +1,1 @@
+Add Redis 8.x versions to CI.
