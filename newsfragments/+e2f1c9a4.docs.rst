@@ -1,0 +1,2 @@
+README updates: add a Quickstart section, clarify fixture scopes and Redis availability,
+and fix wording for the ``redis_noproc`` fixture and timeout defaults.

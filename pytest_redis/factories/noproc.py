@@ -27,7 +27,7 @@ def redis_noproc(
     """
 
     @pytest.fixture(scope="session")
-    def redis_nooproc_fixture(request: FixtureRequest) -> Generator[NoopRedis, None, None]:
+    def redis_noproc_fixture(request: FixtureRequest) -> Generator[NoopRedis, None, None]:
         """Nooproc fixture for pytest-redis.
 
         Builds mock executor to run tests with
@@ -49,4 +49,4 @@ def redis_noproc(
         with redis_noopexecutor:
             yield redis_noopexecutor
 
-    return redis_nooproc_fixture
+    return redis_noproc_fixture

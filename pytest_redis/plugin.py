@@ -71,7 +71,7 @@ def pytest_addoption(parser: Parser) -> None:
     parser.addini(
         name="redis_timeout",
         help=_help_timeout,
-        default=30,
+        default=15,
     )
     parser.addini(
         name="redis_loglevel",
@@ -136,6 +136,6 @@ def pytest_addoption(parser: Parser) -> None:
 
 
 redis_proc = pytest_redis.factories.proc.redis_proc()
-redis_nooproc = pytest_redis.factories.noproc.redis_noproc()
+redis_noproc = pytest_redis.factories.noproc.redis_noproc()
 redisdb = pytest_redis.factories.client.redisdb("redis_proc")
 # pylint:enable=invalid-name

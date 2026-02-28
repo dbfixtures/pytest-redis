@@ -24,8 +24,38 @@ pytest-redis
 What is this?
 =============
 
-This is a pytest plugin, that enables you to test your code that relies on a running Redis database.
+This is a pytest plugin that enables you to test your code that relies on a running Redis database.
 It allows you to specify additional fixtures for Redis process and client.
+
+Quickstart: first test
+----------------------
+
+1) Install the plugin and your test dependencies (as you normally do for your project).
+2) Ensure Redis is available (local install or container). The ``redis-server`` executable
+   must be on PATH, or pass it explicitly with ``--redis-exec``. If Redis can't be found or
+   started, pytest-redis raises ``RedisMisconfigured``.
+3) Create a test that uses the built-in fixture:
+
+.. code-block:: python
+
+    def test_can_connect(redisdb):
+        redisdb.set("ping", "pong")
+        assert redisdb.get("ping") == b"pong"
+
+4) Run your tests:
+
+.. code-block:: shell
+
+    pytest
+
+The plugin contains three fixtures:
+
+* **redisdb** - function-scoped client fixture that cleans all databases after each test.
+* **redis_proc** - session-scoped fixture that starts Redis at first use and stops at the end
+  of the tests.
+* **redis_noproc** - no-process fixture that connects to an already running Redis instance.
+
+Simply include one of these fixtures in your test fixture list.
 
 
 
@@ -36,16 +66,6 @@ It allows you to specify additional fixtures for Redis process and client.
 
 How to use
 ==========
-
-Plugin contains three fixtures
-
-* **redisdb** - This is a redis client fixture. It constructs a redis client and cleans redis database after the test.
-    It relies on redis_proc fixture, and as such the redis process is started at the very beginning of the first test
-    using this fixture, and stopped after the last test finishes.
-* **redis_proc** - session scoped fixture, that starts Redis instance at it's first use and stops at the end of the tests.
-* **redis_nooproc** - a nooprocess fixture, that's connecting to already running redis
-
-Simply include one of these fixtures into your tests fixture list.
 
 .. code-block:: python
 
@@ -61,7 +81,7 @@ Simply include one of these fixtures into your tests fixture list.
 
         assert redisdb.get("did_it") == 1
 
-For the example above works like following:
+The example above works as follows:
 
 1. pytest runs tests
 2. redis_proc starts redis database server
@@ -71,7 +91,7 @@ For the example above works like following:
 6. redis_proc stops server (if that was the last test using it)
 7. pytest ends running tests
 
-You can also create additional redis client and process fixtures if you'd need to:
+You can also create additional redis client and process fixtures if you need to:
 
 
 .. code-block:: python
@@ -100,12 +120,12 @@ You can also create additional redis client and process fixtures if you'd need t
 Connecting to already existing redis database
 ---------------------------------------------
 
-Some projects are using already running redis servers (ie on docker instances).
-In order to connect to them, one would be using the ``redis_nooproc`` fixture.
+Some projects use already running Redis servers (i.e. on Docker instances).
+In order to connect to them, one would be using the ``redis_noproc`` fixture.
 
 .. code-block:: python
 
-    redis_external = factories.redisdb('redis_nooproc')
+    redis_external = factories.redisdb('redis_noproc')
 
     def test_redis(redis_external):
         """Check that it's actually working on redis database."""
@@ -119,10 +139,10 @@ In order to connect to them, one would be using the ``redis_nooproc`` fixture.
         assert redis_external.get("did_it") == 1
 
 Standard configuration options apply to it. Note that the `modules` configuration option
-has no effect with the ``redis_nooproc`` fixture, it is the responsibility of the already
+has no effect with the ``redis_noproc`` fixture, it is the responsibility of the already
 running redis server to be properly started with extension modules, if needed.
 
-By default the ``redis_nooproc`` fixture would connect to Redis
+By default the ``redis_noproc`` fixture would connect to Redis
 instance using **6379** port attempting to make a successful socket
 connection within **15 seconds**. The fixture will block your test run
 within this timeout window. You can overwrite the timeout like so:
@@ -131,14 +151,15 @@ within this timeout window. You can overwrite the timeout like so:
 .. code-block:: python
 
     # set the blocking wait to 5 seconds
-    redis_external = factories.redis_noproc(timeout=5)
+    redis_noproc = factories.redis_noproc(startup_timeout=5)
+    redis_external = factories.redisdb('redis_noproc')
 
     def test_redis(redis_external):
         """Check that it's actually working on redis database."""
         redis_external.set('test1', 'test')
         # etc etc
 
-These are the configuration options that are working on all levels with the ``redis_nooproc`` fixture:
+These are the configuration options that are working on all levels with the ``redis_noproc`` fixture:
 
 Configuration
 =============
@@ -200,7 +221,7 @@ You can pick which you prefer, but remember that these settings are handled in t
      - --redis-timeout
      - redis_timeout
      - -
-     - 30
+     - 15
    * - number of databases
      - db_count
      - --redis-db-count
