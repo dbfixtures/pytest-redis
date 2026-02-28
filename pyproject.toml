@@ -1,6 +1,6 @@
 [project]
 name = "pytest-redis"
-version = "3.1.3"
+version = "4.0.0"
 description = "Redis fixtures and fixture factories for Pytest."
 readme = "README.rst"
 keywords = ["tests", "pytest", "fixture", "redis"]
@@ -38,7 +38,7 @@ requires-python = ">= 3.10"
 [project.urls]
 "Source" = "https://github.com/dbfixtures/pytest-redis"
 "Bug Tracker" = "https://github.com/dbfixtures/pytest-redis/issues"
-"Changelog" = "https://github.com/dbfixtures/pytest-redis/blob/v3.1.3/CHANGES.rst"
+"Changelog" = "https://github.com/dbfixtures/pytest-redis/blob/v4.0.0/CHANGES.rst"
 
 [project.entry-points."pytest11"]
 pytest_redis = "pytest_redis.plugin"
@@ -118,7 +118,7 @@ showcontent = true
 # github_url = "https://github.com/dbfixtures/pytest-dynamodb/"
 
 [tool.tbump.version]
-current = "3.1.3"
+current = "4.0.0"
 
 # Example of a semver regexp.
 # Make sure this matches current_version before

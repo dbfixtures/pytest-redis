@@ -1,2 +1,0 @@
-Rename the ``redis_nooproc`` fixture to ``redis_noproc`` (typo fix); update any fixture names accordingly.
-The default ``redis_timeout`` is now 15 seconds (was 30).

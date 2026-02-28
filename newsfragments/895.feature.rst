@@ -1,4 +1,0 @@
-Improved xdist compatibility by introducing port-locking mechanism.
-
-If one worker claims a port, it will lock it, and other xdist workers will
-either check another port or raise an error with clear message.

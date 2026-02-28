@@ -3,6 +3,70 @@ CHANGELOG
 
 .. towncrier release notes start
 
+pytest-redis 4.0.0 (2026-02-28)
+===============================
+
+Breaking changes
+----------------
+
+- RedisConfigType (TypedDict) is removed and replaced by the RedisConfig dataclass.
+
+  Update callers of get_config to expect and handle a RedisConfig return value, switch access from config["key"] to config.key,
+  and replace any RedisConfigType imports with RedisConfig. (`#891 <https://github.com/dbfixtures/pytest-redis/issues/891>`__)
+- Drop support for Python 3.9 (`#900 <https://github.com/dbfixtures/pytest-redis/issues/900>`__)
+- Rename the ``redis_nooproc`` fixture to ``redis_noproc`` (typo fix); update any fixture names accordingly.
+  The default ``redis_timeout`` is now 15 seconds (was 30).
+
+
+Features
+--------
+
+- Improved xdist compatibility by introducing port-locking mechanism.
+
+  If one worker claims a port, it will lock it, and other xdist workers will
+  either check another port or raise an error with clear message. (`#895 <https://github.com/dbfixtures/pytest-redis/issues/895>`__)
+- Mark support for Python 3.14 (`#900 <https://github.com/dbfixtures/pytest-redis/issues/900>`__)
+
+
+Bugfixes
+--------
+
+- Fixed an issue where setting ``syslog`` parameter to ``False`` on a fixture, would have the same effect as ``None``, in which case,
+  the value used would be deferred to the configured one, which could be set to ``True``. (`#912 <https://github.com/dbfixtures/pytest-redis/issues/912>`__)
+
+
+Documentation
+-------------
+
+- Add architecture diagram to readme. (`#898 <https://github.com/dbfixtures/pytest-redis/issues/898>`__)
+- README updates: add a Quickstart section, clarify fixture scopes and Redis availability,
+  and fix wording for the ``redis_noproc`` fixture and timeout defaults.
+
+
+Miscellaneus
+------------
+
+- Run xdist test with `n auto` flag.
+
+  This actually runs tests on several workers which makes it more likely to detect any bugs when running tests. (`#895 <https://github.com/dbfixtures/pytest-redis/issues/895>`__)
+- Replaced black with ruff format (`#896 <https://github.com/dbfixtures/pytest-redis/issues/896>`__)
+- Added CI pipeline to test pytest-redis against oldest supported package versions. (`#897 <https://github.com/dbfixtures/pytest-redis/issues/897>`__)
+- Validate package configuration against supported and required python versions in pre-commit. (`#899 <https://github.com/dbfixtures/pytest-redis/issues/899>`__)
+- Add release workflow to ease release process (`#901 <https://github.com/dbfixtures/pytest-redis/issues/901>`__)
+- Update the tests, to rely on editable install instead of the source code location. (`#908 <https://github.com/dbfixtures/pytest-redis/issues/908>`__)
+- Add Redis 8.x versions to CI. (`#909 <https://github.com/dbfixtures/pytest-redis/issues/909>`__)
+- Update pytest configuration to toml-native (`#917 <https://github.com/dbfixtures/pytest-redis/issues/917>`__)
+- Adjust links after repository transfer
+- Adjust workflows for actions-reuse 3
+- Fix CI warning: Unexpected input(s) 'python-version', valid inputs are ['command', 'env']
+- Fix coveragerc configuration
+- Refactored CI to use shared internal workflows instead of actions.
+
+  Such workflows are updated by dependabot, while actions not yet.
+- Update really old composite actions in internal actions/pytest
+- Use pre-commit for maintaining code style and linting
+
+
 3.1.3 (2024-11-27)
 ==================
 

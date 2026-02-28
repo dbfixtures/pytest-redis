@@ -1,1 +1,0 @@
-Add architecture diagram to readme.

@@ -1,1 +1,0 @@
-Update the tests, to rely on editable install instead of the source code location.

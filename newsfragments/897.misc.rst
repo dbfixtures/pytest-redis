@@ -1,1 +1,0 @@
-Added CI pipeline to test pytest-redis against oldest supported package versions.

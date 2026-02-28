@@ -18,4 +18,4 @@
 # along with pytest-redis. If not, see <http://www.gnu.org/licenses/>.
 """Main module for pytest-redis."""
 
-__version__ = "3.1.3"
+__version__ = "4.0.0"

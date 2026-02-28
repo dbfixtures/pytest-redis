@@ -1,3 +1,0 @@
-Refactored CI to use shared internal workflows instead of actions.
-
-Such workflows are updated by dependabot, while actions not yet.
