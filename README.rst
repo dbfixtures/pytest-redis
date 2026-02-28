@@ -27,6 +27,13 @@ What is this?
 This is a pytest plugin, that enables you to test your code that relies on a running Redis database.
 It allows you to specify additional fixtures for Redis process and client.
 
+
+
+.. image:: https://raw.githubusercontent.com/dbfixtures/pytest-redis/main/docs/images/architecture.svg
+    :alt: Project Architecture Diagram
+    :align: center
+
+
 How to use
 ==========
 

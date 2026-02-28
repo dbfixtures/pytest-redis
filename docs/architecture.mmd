@@ -1,0 +1,16 @@
+sequenceDiagram
+    autonumber
+    participant Pytest as Pytest runner
+    participant ProcFactory as redis_proc fixture
+    participant RedisProcess as Redis server process
+    participant ClientFactory as redisdb client fixture
+    participant Redis as Redis database
+
+    Pytest->>ProcFactory: request redis_proc
+    ProcFactory->>RedisProcess: start process
+    loop per test
+        Pytest->>ClientFactory: request redisdb client
+        ClientFactory->>RedisProcess: connect with Redis client
+        Pytest->>Redis: run test using database
+        Pytest->>Redis: teardown: flush all data
+    end

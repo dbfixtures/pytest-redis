@@ -1,0 +1,13 @@
+name: Render Mermaid Diagrams
+on:
+  push:
+    paths:
+      - 'docs/*.mmd' # Trigger only when mermaid files change
+      - '.github/workflows/diagram.yml'
+
+jobs:
+  render:
+    # Grant the action permission to write to the repository
+    permissions:
+      contents: write
+    uses: fizyk/actions-reuse/.github/workflows/shared-diagram.yml@v4.3.0
