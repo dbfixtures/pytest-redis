@@ -43,19 +43,36 @@ jobs:
           path: ~/redis
           key: redis-${{ hashFiles('.download-redis.sh') }}
       - name: Run test on Redis ${{ matrix.redis-version }}
+        id: run_serial_tests
         uses: fizyk/actions-reuse/.github/actions/pipenv@v4.4.3
         with:
           python-version: ${{ matrix.python-version }}
-          command: pytest -p no:xdist --cov-report=xml --redis-exec=$HOME/redis/redis-${{ matrix.redis-version }}/src/redis-server
           allow-prereleases: true
+          command: python -m coverage run -m pytest -p no:xdist --redis-exec=$HOME/redis/redis-${{ matrix.redis-version }}/src/redis-server
+          env: '{"COVERAGE_PROCESS_START": ".coveragerc", "COVERAGE_FILE": ".coverage.serial"}'
+      - name: Combine and export serial coverage
+        if: ${{ always() && (steps.run_serial_tests.conclusion == 'success' || steps.run_serial_tests.conclusion == 'failure') }}
+        uses: fizyk/actions-reuse/.github/actions/coverage-combine-export@v4.4.3
+        with:
+          data-file: .coverage.serial
+          output-file: coverage.xml
       - name: Run xdist test on Redis ${{ matrix.redis-version }}
+        id: run_xdist_tests
         uses: fizyk/actions-reuse/.github/actions/pipenv-run@v4.4.3
         with:
-          command: pytest -n auto --max-worker-restart=0 --cov-report=xml:coverage-xdist.xml --redis-exec=$HOME/redis/redis-${{ matrix.redis-version }}/src/redis-server
+          command: python -m coverage run -m pytest -n auto --max-worker-restart=0 --redis-exec=$HOME/redis/redis-${{ matrix.redis-version }}/src/redis-server
+          env: '{"COVERAGE_PROCESS_START": ".coveragerc", "COVERAGE_FILE": ".coverage.xdist"}'
+      - name: Combine and export xdist coverage
+        if: ${{ always() && (steps.run_xdist_tests.conclusion == 'success' || steps.run_xdist_tests.conclusion == 'failure') }}
+        uses: fizyk/actions-reuse/.github/actions/coverage-combine-export@v4.4.3
+        with:
+          data-file: .coverage.xdist
+          output-file: coverage-xdist.xml
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
           flags: linux,redis-${{ matrix.redis-version }}
           env_vars: OS,PYTHON,REDIS_VERSION
+          files: coverage.xml,coverage-xdist.xml
           fail_ci_if_error: false
           token: ${{ secrets.codecov_token }}

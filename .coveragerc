@@ -1,2 +1,7 @@
 [run]
-source = pytest_redis
+concurrency = multiprocessing
+parallel = true
+patch = subprocess
+include =
+    */pytest_redis/*
+    */tests/*

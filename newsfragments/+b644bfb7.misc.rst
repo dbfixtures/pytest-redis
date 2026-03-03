@@ -1,0 +1,4 @@
+Improved coverage reliability in CI by switching to ``coverage run`` with explicit
+``coverage combine``/``coverage xml`` steps, enabling multiprocessing and subprocess
+coverage aggregation, and using editable-install-safe include globs for package and
+test paths.
