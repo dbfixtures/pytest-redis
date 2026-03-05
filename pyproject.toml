@@ -57,7 +57,7 @@ namespaces = false
 
 [tool.pytest]
 xfail_strict=true
-addopts = ["--showlocals", "--verbose", "--cov"]
+addopts = ["--showlocals", "--verbose"]
 testpaths = ["tests"]
 
 [tool.ruff]
