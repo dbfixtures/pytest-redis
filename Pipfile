@@ -7,7 +7,7 @@ name = "pypi"
 pytest = "==9.0.2"
 port-for = "==1.0.0"
 mirakuru = "==3.0.2"
-redis = "==7.2.1"
+redis = "==7.3.0"
 pytest-redis = {path = ".", editable = true}
 
 [dev-packages]
