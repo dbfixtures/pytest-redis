@@ -44,7 +44,7 @@ jobs:
           key: redis-${{ hashFiles('.download-redis.sh') }}
       - name: Run test on Redis ${{ matrix.redis-version }}
         id: run_serial_tests
-        uses: fizyk/actions-reuse/.github/actions/pipenv@v4.4.3
+        uses: fizyk/actions-reuse/.github/actions/pipenv@v4.4.5
         with:
           python-version: ${{ matrix.python-version }}
           allow-prereleases: true
@@ -52,19 +52,19 @@ jobs:
           env: '{"COVERAGE_PROCESS_START": ".coveragerc", "COVERAGE_FILE": ".coverage.serial"}'
       - name: Combine and export serial coverage
         if: ${{ always() && (steps.run_serial_tests.conclusion == 'success' || steps.run_serial_tests.conclusion == 'failure') }}
-        uses: fizyk/actions-reuse/.github/actions/coverage-combine-export@v4.4.3
+        uses: fizyk/actions-reuse/.github/actions/coverage-combine-export@v4.4.5
         with:
           data-file: .coverage.serial
           output-file: coverage.xml
       - name: Run xdist test on Redis ${{ matrix.redis-version }}
         id: run_xdist_tests
-        uses: fizyk/actions-reuse/.github/actions/pipenv-run@v4.4.3
+        uses: fizyk/actions-reuse/.github/actions/pipenv-run@v4.4.5
         with:
           command: python -m coverage run -m pytest -n auto --max-worker-restart=0 --redis-exec=$HOME/redis/redis-${{ matrix.redis-version }}/src/redis-server
           env: '{"COVERAGE_PROCESS_START": ".coveragerc", "COVERAGE_FILE": ".coverage.xdist"}'
       - name: Combine and export xdist coverage
         if: ${{ always() && (steps.run_xdist_tests.conclusion == 'success' || steps.run_xdist_tests.conclusion == 'failure') }}
-        uses: fizyk/actions-reuse/.github/actions/coverage-combine-export@v4.4.3
+        uses: fizyk/actions-reuse/.github/actions/coverage-combine-export@v4.4.5
         with:
           data-file: .coverage.xdist
           output-file: coverage-xdist.xml
