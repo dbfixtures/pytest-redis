@@ -76,7 +76,7 @@ jobs:
           data-file: .coverage.xdist
           output-file: coverage-xdist.xml
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           flags: linux,redis-${{ matrix.redis-version }}
           env_vars: OS,PYTHON,REDIS_VERSION
