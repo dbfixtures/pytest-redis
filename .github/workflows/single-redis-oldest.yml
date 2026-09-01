@@ -35,6 +35,7 @@ jobs:
       OS: ${{ inputs.os }}
       PYTHON: ${{ matrix.python-version }}
       REDIS_VERSION: ${{ matrix.redis-version }}
+      UV_NO_SYNC: "1"
     steps:
       - uses: actions/checkout@v6
       - name: Cache Redis builds
@@ -42,37 +43,26 @@ jobs:
         with:
           path: ~/redis
           key: redis-${{ hashFiles('.download-redis.sh') }}
-      - name: Setup environment
-        uses: fizyk/actions-reuse/.github/actions/pipenv-setup@v4.4.7
+      - name: Set up uv with python ${{ matrix.python-version }}
+        uses: fizyk/actions-reuse/.github/actions/uv-setup@7eefbd6ffc6c6787ad3be6ce93dcf475e3ae99b5 # v5.6.0
         with:
           python-version: ${{ matrix.python-version }}
-          allow-prereleases: true
       - name: Install oldest supported versions
-        uses: fizyk/actions-reuse/.github/actions/pipenv-run@v4.4.7
+        uses: fizyk/actions-reuse/.github/actions/uv-run@7eefbd6ffc6c6787ad3be6ce93dcf475e3ae99b5 # v5.6.0
         with:
           command: pip install -r oldest/requirements.txt
       - name: Run test on Redis ${{ matrix.redis-version }}
-        id: run_serial_tests
-        uses: fizyk/actions-reuse/.github/actions/pipenv-run@v4.4.7
+        uses: fizyk/actions-reuse/.github/actions/uv-pytest-coverage@7eefbd6ffc6c6787ad3be6ce93dcf475e3ae99b5 # v5.6.0
         with:
-          command: python -m coverage run -m pytest -c pyproject.oldest.toml -p no:xdist --redis-exec=$HOME/redis/redis-${{ matrix.redis-version }}/src/redis-server
-          env: '{"COVERAGE_PROCESS_START": ".coveragerc", "COVERAGE_FILE": ".coverage.serial"}'
-      - name: Combine and export serial coverage
-        if: ${{ always() && (steps.run_serial_tests.conclusion == 'success' || steps.run_serial_tests.conclusion == 'failure') }}
-        uses: fizyk/actions-reuse/.github/actions/coverage-combine-export@v4.4.7
-        with:
+          pytest-opts: -c pyproject.oldest.toml -p no:xdist --redis-exec=$HOME/redis/redis-${{ matrix.redis-version }}/src/redis-server
           data-file: .coverage.serial
-          output-file: coverage.xml
+          output-file: coverage-serial.xml
+
       - name: Run xdist test on Redis ${{ matrix.redis-version }}
-        id: run_xdist_tests
-        uses: fizyk/actions-reuse/.github/actions/pipenv-run@v4.4.7
+        uses: fizyk/actions-reuse/.github/actions/uv-pytest-coverage@7eefbd6ffc6c6787ad3be6ce93dcf475e3ae99b5 # v5.6.0
         with:
-          command: python -m coverage run -m pytest -c pyproject.oldest.toml -n auto --max-worker-restart=0 --redis-exec=$HOME/redis/redis-${{ matrix.redis-version }}/src/redis-server
-          env: '{"COVERAGE_PROCESS_START": ".coveragerc", "COVERAGE_FILE": ".coverage.xdist"}'
-      - name: Combine and export xdist coverage
-        if: ${{ always() && (steps.run_xdist_tests.conclusion == 'success' || steps.run_xdist_tests.conclusion == 'failure') }}
-        uses: fizyk/actions-reuse/.github/actions/coverage-combine-export@v4.4.7
-        with:
+          pytest-opts: -c pyproject.oldest.toml -n auto --max-worker-restart=0 --redis-exec=$HOME/redis/redis-${{ matrix.redis-version }}/src/redis-server
+          coverage-config: .coveragerc
           data-file: .coverage.xdist
           output-file: coverage-xdist.xml
       - name: Upload coverage to Codecov

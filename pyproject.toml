@@ -1,6 +1,6 @@
 [build-system]
-build-backend = "setuptools.build_meta"
-requires = [ "setuptools>=61.0.0" ]
+build-backend = "uv_build"
+requires = [ "uv-build>=0.12,<0.13" ]
 
 [project]
 name = "pytest-redis"
@@ -8,14 +8,14 @@ version = "4.0.0"
 description = "Redis fixtures and fixture factories for Pytest."
 readme = "README.rst"
 keywords = [ "fixture", "pytest", "redis", "tests" ]
-license = { file = "COPYING.lesser" }
+license = "LGPL-3.0-or-later"
+license-files = [ "COPYING.lesser" ]
 requires-python = ">=3.10"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Web Environment",
     "Framework :: Pytest",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
@@ -31,6 +31,7 @@ classifiers = [
 ]
 dependencies = [
     "mirakuru>=2.6.0",
+    "packaging",
     "port-for>=0.7.3",
     "pytest>=8.4.0",
     "redis>=4.1.0",
@@ -48,13 +49,29 @@ Changelog = "https://github.com/dbfixtures/pytest-redis/blob/v4.0.0/CHANGES.rst"
 [project.entry-points.pytest11]
 pytest_redis = "pytest_redis.plugin"
 
-[tool.setuptools]
-zip-safe = true
+[dependency-groups]
+dev = [
+    "coverage==7.15.4",
+    "mirakuru==3.0.2",
+    "mock==5.2.0",
+    "mypy==2.3.1; implementation_name=='cpython'",
+    "packaging==26.3",
+    "port-for==1.0.0",
+    "pytest==9.1.1",
+    "pytest-xdist==3.8.0",
+    "redis==7.4.0",
+    "towncrier==25.8.0",
+    "types-mock==5.2.0.20260518",
+    "types-redis==4.6.0.20241004",
+]
+release = [
+    "tbump==6.11.0",
+]
 
-[tool.setuptools.packages.find]
-include = [ "pytest_redis*" ]
-exclude = [ "tests*" ]
-namespaces = false
+[tool.uv.build-backend]
+module-name = "pytest_redis"
+module-root = ""
+source-include = [ "CHANGES.rst" ]
 
 [tool.ruff]
 line-length = 100
@@ -87,7 +104,7 @@ xfail_strict = true
 
 [[tool.tbump.before_commit]]
 name = "Build changelog"
-cmd = "pipenv run towncrier build --version {new_version} --yes"
+cmd = "uv run towncrier build --version {new_version} --yes"
 
 [[tool.tbump.field]]
 name = "extra"

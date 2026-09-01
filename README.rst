@@ -302,12 +302,3 @@ Options below are for configuring redis client fixture.
 +=====================+==========================+=====================+===================+=========+
 | decode_response     | decode                   | --redis-decode      | redis_decode      | False   |
 +---------------------+--------------------------+---------------------+-------------------+---------+
-
-Release
-=======
-
-Install pipenv and --dev dependencies first, Then run:
-
-.. code-block:: bash
-
-    pipenv run tbump [NEW_VERSION]
