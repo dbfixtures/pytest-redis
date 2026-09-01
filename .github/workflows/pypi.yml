@@ -3,10 +3,28 @@ on:
   push:
     tags:
       - v*
+permissions: {}
+
 jobs:
-  build-n-publish:
-    uses: fizyk/actions-reuse/.github/workflows/shared-pypi.yml@v4.4.7
-    with:
-      publish: true
-    secrets:
-      pypi_token: ${{ secrets.pypi_token }}
+  build:
+    permissions:
+      contents: read
+    uses: ./.github/workflows/build.yml
+
+  publish:
+    name: Publish Python 🐍 distributions 📦 to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - name: Download distributions 📦
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: package
+          path: dist/
+      - name: Publish distribution 📦 to PyPI
+        uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
+        with:
+          verbose: true
