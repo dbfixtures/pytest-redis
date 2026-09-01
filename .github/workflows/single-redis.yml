@@ -36,7 +36,7 @@ jobs:
       PYTHON: ${{ matrix.python-version }}
       REDIS_VERSION: ${{ matrix.redis-version }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Cache Redis builds
         uses: actions/cache@v5
         with:
