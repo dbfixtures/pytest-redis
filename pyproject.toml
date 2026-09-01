@@ -41,6 +41,11 @@ dependencies = [
 name = "Grzegorz Śliwiński"
 email = "fizyk+pypi@fizyk.dev"
 
+[project.optional-dependencies]
+async = [
+    "pytest-asyncio>=1.0.0",
+]
+
 [project.urls]
 Source = "https://github.com/dbfixtures/pytest-redis"
 "Bug Tracker" = "https://github.com/dbfixtures/pytest-redis/issues"
@@ -58,11 +63,11 @@ dev = [
     "packaging==26.3",
     "port-for==1.0.0",
     "pytest==9.1.1",
+    "pytest-asyncio==1.4.0",
     "pytest-xdist==3.8.0",
     "redis==7.4.0",
     "towncrier==25.8.0",
     "types-mock==5.2.0.20260518",
-    "types-redis==4.6.0.20241004",
 ]
 release = [
     "tbump==6.11.0",
@@ -97,6 +102,8 @@ sub_table_spacing = "\n"
 
 [tool.pytest]
 addopts = [ "--showlocals", "--verbose" ]
+asyncio_default_fixture_loop_scope = "function"
+asyncio_mode = "strict"
 testpaths = [ "tests" ]
 xfail_strict = true
 

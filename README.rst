@@ -48,9 +48,12 @@ Quickstart: first test
 
     pytest
 
-The plugin contains three fixtures:
+The plugin contains four fixtures:
 
 * **redisdb** - function-scoped client fixture that cleans all databases after each test.
+* **redisdb_async** - function-scoped ``redis.asyncio`` client fixture, the asynchronous
+  counterpart of ``redisdb``. Requires the ``async`` extra, see
+  `Asynchronous Redis client`_.
 * **redis_proc** - session-scoped fixture that starts Redis at first use and stops at the end
   of the tests.
 * **redis_noproc** - no-process fixture that connects to an already running Redis instance.
@@ -115,6 +118,59 @@ You can also create additional redis client and process fixtures if you need to:
 .. note::
 
     Each Redis process fixture can be configured in a different way than the others through the fixture factory arguments.
+
+
+Asynchronous Redis client
+-------------------------
+
+``redisdb_async`` is the asynchronous counterpart of ``redisdb``. It yields a
+``redis.asyncio.Redis`` client connected to the very same Redis instance the
+process fixtures manage, flushes all databases after each test and closes the
+client's connection pool on teardown.
+
+It builds on `pytest-asyncio <https://pypi.org/project/pytest-asyncio/>`_, which
+is an optional dependency. Install it along with pytest-redis:
+
+.. code-block:: shell
+
+    pip install pytest-redis[async]
+
+Then use the fixture from an async test:
+
+.. code-block:: python
+
+    import pytest
+
+    @pytest.mark.asyncio
+    async def test_redis_async(redisdb_async):
+        """Check that it's actually working on redis database."""
+        await redisdb_async.set('test1', 'test')
+
+        assert await redisdb_async.get('test1') == b'test'
+
+The ``redisdb_async`` factory takes the same arguments as ``redisdb``, so
+additional async client fixtures are created the same way - including ones
+connecting to an already running server through ``redis_noproc``:
+
+.. code-block:: python
+
+    from pytest_redis import factories
+
+    redis_my_proc = factories.redis_proc(port=None)
+    redis_my_async = factories.redisdb_async('redis_my_proc')
+    redis_external_async = factories.redisdb_async('redis_noproc')
+
+.. note::
+
+    The process fixtures are shared between the sync and async client fixtures.
+    ``redisdb`` and ``redisdb_async`` requested by the same test therefore talk
+    to the same Redis instance.
+
+.. note::
+
+    ``pytest-asyncio`` >= 1.0.0 and ``redis`` >= 4.2.0 are required. Without them
+    the fixture raises an ``ImportError`` pointing at the ``async`` extra, while
+    the rest of pytest-redis keeps working as usual.
 
 
 Connecting to already existing redis database

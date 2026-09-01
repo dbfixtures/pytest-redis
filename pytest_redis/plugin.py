@@ -22,6 +22,7 @@ from shutil import which
 from pytest import Parser
 
 import pytest_redis.factories.client
+import pytest_redis.factories.client_async
 import pytest_redis.factories.noproc
 import pytest_redis.factories.proc
 
@@ -138,4 +139,5 @@ def pytest_addoption(parser: Parser) -> None:
 redis_proc = pytest_redis.factories.proc.redis_proc()
 redis_noproc = pytest_redis.factories.noproc.redis_noproc()
 redisdb = pytest_redis.factories.client.redisdb("redis_proc")
+redisdb_async = pytest_redis.factories.client_async.redisdb_async("redis_proc")
 # pylint:enable=invalid-name
