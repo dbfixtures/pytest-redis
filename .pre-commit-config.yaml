@@ -1,6 +1,8 @@
 ---
 ci:
   skip: [uv-sync, mypy]
+  autofix_prs: false
+  autoupdate_schedule: quarterly
 
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
@@ -45,6 +47,17 @@ repos:
     rev: v0.1.0
     hooks:
       - id: check-python-version-consistency
+
+  - repo: https://github.com/zizmorcore/zizmor-pre-commit
+    rev: v1.29.0
+    hooks:
+      - id: zizmor
+        args: [--no-progress, --fix]
+
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.12
+    hooks:
+      - id: actionlint
 
   - repo: local
     hooks:

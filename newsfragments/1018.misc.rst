@@ -1,0 +1,1 @@
+Add zizmor to pre-commit and set explicit minimal ``permissions`` on all workflow jobs
