@@ -4,11 +4,12 @@ from __future__ import annotations
 
 from collections.abc import AsyncIterator, Callable
 from types import ModuleType
-from typing import TYPE_CHECKING, Literal, TypeGuard, cast
+from typing import Literal, TypeGuard, cast
 
 import pytest
 from _pytest.fixtures import FixtureRequest
 from packaging.version import parse
+from redis.asyncio import Redis
 
 from pytest_redis.config import get_config
 from pytest_redis.executor import NoopRedis, RedisExecutor
@@ -17,15 +18,6 @@ from pytest_redis.executor import NoopRedis, RedisExecutor
 # itself. Older releases do provide ``pytest_asyncio.fixture``, but are not
 # supported here.
 MIN_PYTEST_ASYNCIO_VERSION = parse("1.0.0")
-
-if TYPE_CHECKING:
-    from redis.asyncio import Redis
-else:
-    try:
-        # redis.asyncio has been introduced in redis 4.2.0
-        from redis.asyncio import Redis
-    except ImportError:  # pragma: no cover
-        Redis = None
 
 try:
     import pytest_asyncio
@@ -40,30 +32,15 @@ def supports_async_fixtures(module: ModuleType | None) -> TypeGuard[ModuleType]:
     return parse(module.__version__) >= MIN_PYTEST_ASYNCIO_VERSION
 
 
-def async_support_available() -> bool:
-    """Return True if both pytest-asyncio and an async capable redis are importable."""
-    return supports_async_fixtures(pytest_asyncio) and Redis is not None
-
-
-def _missing_requirements() -> list[str]:
-    """Return the requirements of the async fixtures unmet in this environment."""
-    missing = []
-    if not supports_async_fixtures(pytest_asyncio):
-        missing.append("pytest-asyncio >= 1.0.0")
-    if Redis is None:
-        missing.append("redis >= 4.2.0")
-    return missing
-
-
 def _unavailable_stub() -> Callable[[FixtureRequest], AsyncIterator[Redis]]:
-    """Return a sync fixture raising a helpful error when async support is missing."""
-    missing = " and ".join(_missing_requirements())
+    """Return a sync fixture raising a helpful error when pytest-asyncio is missing."""
 
     @pytest.fixture
     def redisdb_async_stub(request: FixtureRequest) -> None:
         """Raise ImportError, as async fixtures are unavailable in this environment."""
         raise ImportError(
-            f"{missing} required for async fixtures. Install with: pip install pytest-redis[async]"
+            "pytest-asyncio >= 1.0.0 is required for async fixtures. "
+            "Install it with: pip install pytest-redis[async]"
         )
 
     return cast("Callable[[FixtureRequest], AsyncIterator[Redis]]", redisdb_async_stub)
@@ -74,8 +51,8 @@ def redisdb_async(
 ) -> Callable[[FixtureRequest], AsyncIterator[Redis]]:
     """Create async connection fixture factory for pytest-redis.
 
-    Requires ``pytest-asyncio`` >= 1.0.0 and ``redis`` >= 4.2.0,
-    installable with ``pip install pytest-redis[async]``.
+    Requires ``pytest-asyncio``, installable with
+    ``pip install pytest-redis[async]``.
 
     :param process_fixture_name: name of the process fixture
     :param dbnum: number of database to use
@@ -83,7 +60,7 @@ def redisdb_async(
         See redis.StrictRedis decode_response client parameter.
     :returns: function which makes an async connection to redis
     """
-    if not async_support_available():
+    if not supports_async_fixtures(pytest_asyncio):
         return _unavailable_stub()
 
     @pytest_asyncio.fixture

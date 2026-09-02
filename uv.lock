@@ -756,7 +756,7 @@ requires-dist = [
     { name = "port-for", specifier = ">=0.7.3" },
     { name = "pytest", specifier = ">=8.4.0" },
     { name = "pytest-asyncio", marker = "extra == 'async'", specifier = ">=1.0.0" },
-    { name = "redis", specifier = ">=4.1.0" },
+    { name = "redis", specifier = ">=5.0.1" },
 ]
 provides-extras = ["async"]
 

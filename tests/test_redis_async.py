@@ -3,8 +3,6 @@
 import pytest
 
 pytest_asyncio = pytest.importorskip("pytest_asyncio", minversion="1.0.0")
-# redis.asyncio has been introduced in redis 4.2.0
-pytest.importorskip("redis.asyncio")
 
 from redis import Redis as SyncRedis  # noqa: E402
 from redis.asyncio import Redis  # noqa: E402

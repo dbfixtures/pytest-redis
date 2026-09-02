@@ -168,9 +168,9 @@ connecting to an already running server through ``redis_noproc``:
 
 .. note::
 
-    ``pytest-asyncio`` >= 1.0.0 and ``redis`` >= 4.2.0 are required. Without them
-    the fixture raises an ``ImportError`` pointing at the ``async`` extra, while
-    the rest of pytest-redis keeps working as usual.
+    ``pytest-asyncio`` >= 1.0.0 is required. Without it the fixture raises an
+    ``ImportError`` pointing at the ``async`` extra, while the rest of
+    pytest-redis keeps working as usual.
 
 
 Connecting to already existing redis database
