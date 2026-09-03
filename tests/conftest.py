@@ -4,6 +4,8 @@ import warnings
 
 import pytest_redis.factories
 
+pytest_plugins = ["pytester"]
+
 warnings.filterwarnings(
     "error", category=DeprecationWarning, module="(_pytest|pytest|redis|path|mirakuru).*"
 )

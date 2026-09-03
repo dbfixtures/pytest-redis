@@ -1,0 +1,3 @@
+Added ``redisdb_async``, a fixture and fixture factory providing an asynchronous
+``redis.asyncio.Redis`` client. Requires the new ``async`` extra
+(``pip install 'pytest-redis[async]'``), which pulls in ``pytest-asyncio``.

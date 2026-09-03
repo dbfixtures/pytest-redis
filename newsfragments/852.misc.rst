@@ -1,0 +1,1 @@
+Raised the minimum supported ``redis`` to 5.0.1.
