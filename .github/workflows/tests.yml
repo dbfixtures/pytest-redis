@@ -26,7 +26,7 @@ jobs:
     needs: [download_redis]
     uses: ./.github/workflows/single-redis.yml
     with:
-      redis-versions: '["8.4", "8.6"]'
+      redis-versions: '["8.4", "8.6", "8.10", "8.8"]'
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
   tests_older:
