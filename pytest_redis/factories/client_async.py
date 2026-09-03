@@ -38,7 +38,7 @@ def _unavailable_stub() -> Callable[[FixtureRequest], AsyncIterator[Redis]]:
         """Raise ImportError, as async fixtures are unavailable in this environment."""
         raise ImportError(
             "pytest-asyncio is required for async fixtures. "
-            "Install it with: pip install pytest-redis[async]"
+            "Install it with: pip install 'pytest-redis[async]'"
         )
 
     return cast("Callable[[FixtureRequest], AsyncIterator[Redis]]", redisdb_async_stub)
@@ -50,7 +50,7 @@ def redisdb_async(
     """Create async connection fixture factory for pytest-redis.
 
     Requires ``pytest-asyncio``, installable with
-    ``pip install pytest-redis[async]``.
+    ``pip install 'pytest-redis[async]'``.
 
     :param process_fixture_name: name of the process fixture
     :param dbnum: number of database to use
@@ -100,8 +100,10 @@ def redisdb_async(
 
         try:
             yield redis_client
-            await redis_client.flushall()
         finally:
-            await redis_client.aclose()
+            try:
+                await redis_client.flushall()
+            finally:
+                await redis_client.aclose()
 
     return cast("Callable[[FixtureRequest], AsyncIterator[Redis]]", redisdb_async_factory)

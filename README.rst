@@ -133,7 +133,7 @@ is an optional dependency. Install it along with pytest-redis:
 
 .. code-block:: shell
 
-    pip install pytest-redis[async]
+    pip install 'pytest-redis[async]'
 
 Then use the fixture from an async test:
 
