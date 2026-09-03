@@ -1,8 +1,4 @@
-"""Tests for the behaviour of the redisdb_async fixture factory itself.
-
-These run nested pytest sessions through ``pytester``, so that assertions can
-observe what the fixture does *around* a test rather than inside one.
-"""
+"""Tests for the behaviour of the redisdb_async fixture factory itself."""
 
 import pytest
 
@@ -12,9 +8,7 @@ from pytest_redis.executor import RedisExecutor
 def test_async_fixture_without_pytest_asyncio(pytester: pytest.Pytester) -> None:
     """Check a helpful error is raised when pytest-asyncio is not installed.
 
-    Runs with ``pytest_asyncio`` blanked out, so the unavailable-stub path is
-    exercised without uninstalling anything. Deliberately not skipped when
-    pytest-asyncio is absent, as that is exactly the case being covered.
+    Runs with ``pytest_asyncio`` blanked out.
     """
     pytester.makeconftest(
         """
@@ -40,8 +34,7 @@ def test_async_fixture_flushes_and_closes(
 ) -> None:
     """Check the async fixture flushes the database and closes the client on teardown.
 
-    The nested session reuses the redis instance already started for this test,
-    through a noproc fixture.
+    The nested test reuses redis instance started in this test session.
     """
     # The nested session runs async tests, so it needs pytest-asyncio for real.
     pytest.importorskip("pytest_asyncio", minversion="1.0.0")
@@ -72,8 +65,6 @@ def test_async_fixture_flushes_and_closes(
 
 
         def test_first_client_got_closed():
-            # aclose() disconnects the pool it owns, leaving no live connection
-            # behind for the closed event loop to trip over.
             pool = used_clients[0].connection_pool
             assert not any(conn.is_connected for conn in pool._available_connections)
             assert pool._in_use_connections == set()
