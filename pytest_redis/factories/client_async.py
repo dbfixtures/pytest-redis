@@ -8,16 +8,10 @@ from typing import Literal, TypeGuard, cast
 
 import pytest
 from _pytest.fixtures import FixtureRequest
-from packaging.version import parse
 from redis.asyncio import Redis
 
 from pytest_redis.config import get_config
 from pytest_redis.executor import NoopRedis, RedisExecutor
-
-# The first pytest-asyncio 1.x, matching the pytest >= 8.4 floor of pytest-redis
-# itself. Older releases do provide ``pytest_asyncio.fixture``, but are not
-# supported here.
-MIN_PYTEST_ASYNCIO_VERSION = parse("1.0.0")
 
 try:
     import pytest_asyncio
@@ -25,11 +19,15 @@ except ImportError:  # pragma: no cover
     pytest_asyncio = None  # type: ignore[assignment]
 
 
-def supports_async_fixtures(module: ModuleType | None) -> TypeGuard[ModuleType]:
-    """Return True if pytest-asyncio is installed at a version providing async fixtures."""
-    if module is None:
-        return False
-    return parse(module.__version__) >= MIN_PYTEST_ASYNCIO_VERSION
+def installed(module: ModuleType | None) -> TypeGuard[ModuleType]:
+    """Return True if pytest-asyncio is installed.
+
+    Takes the module as an argument, rather than reading the global directly,
+    so that the ``None`` case stays visible to type checkers while
+    ``pytest_asyncio`` itself keeps the module type that the
+    ``@pytest_asyncio.fixture`` decorator needs.
+    """
+    return module is not None
 
 
 def _unavailable_stub() -> Callable[[FixtureRequest], AsyncIterator[Redis]]:
@@ -39,7 +37,7 @@ def _unavailable_stub() -> Callable[[FixtureRequest], AsyncIterator[Redis]]:
     def redisdb_async_stub(request: FixtureRequest) -> None:
         """Raise ImportError, as async fixtures are unavailable in this environment."""
         raise ImportError(
-            "pytest-asyncio >= 1.0.0 is required for async fixtures. "
+            "pytest-asyncio is required for async fixtures. "
             "Install it with: pip install pytest-redis[async]"
         )
 
@@ -60,7 +58,7 @@ def redisdb_async(
         See redis.StrictRedis decode_response client parameter.
     :returns: function which makes an async connection to redis
     """
-    if not supports_async_fixtures(pytest_asyncio):
+    if not installed(pytest_asyncio):
         return _unavailable_stub()
 
     @pytest_asyncio.fixture
