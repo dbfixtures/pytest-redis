@@ -7,7 +7,25 @@ pytest_asyncio = pytest.importorskip("pytest_asyncio", minversion="1.0.0")
 from redis import Redis as SyncRedis  # noqa: E402
 from redis.asyncio import Redis  # noqa: E402
 
+import pytest_redis.factories  # noqa: E402
 from pytest_redis.executor import RedisExecutor  # noqa: E402
+
+# The async external-redis tests get their own fixed ports, so that they never
+# contend for a port with their sync counterparts when the two land on
+# different xdist workers.
+redis_proc4 = pytest_redis.factories.redis_proc(port=6382)
+redis_noproc4 = pytest_redis.factories.redis_noproc(port=6382, startup_timeout=1)
+redis_proc5 = pytest_redis.factories.redis_proc(port=6386, password="secretpassword")
+redis_noproc5 = pytest_redis.factories.redis_noproc(port=6386, password="secretpassword")
+
+# ``redis_other_proc`` lives in conftest.py, shared with the sync client tests.
+redis_otherdb_async = pytest_redis.factories.redisdb_async("redis_other_proc")
+redisdb4_async = pytest_redis.factories.redisdb_async("redis_proc4")
+redisdb4_noop_async = pytest_redis.factories.redisdb_async("redis_noproc4")
+redisdb5_async = pytest_redis.factories.redisdb_async("redis_proc5")
+redisdb5_noop_async = pytest_redis.factories.redisdb_async("redis_noproc5")
+redisdb_async_decode = pytest_redis.factories.redisdb_async("redis_proc", decode=True)
+redisdb_async_dbnum = pytest_redis.factories.redisdb_async("redis_proc", dbnum=4)
 
 
 @pytest.mark.asyncio
