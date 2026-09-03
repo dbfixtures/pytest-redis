@@ -102,8 +102,6 @@ sub_table_spacing = "\n"
 
 [tool.pytest]
 addopts = [ "--showlocals", "--verbose" ]
-asyncio_default_fixture_loop_scope = "function"
-asyncio_mode = "strict"
 testpaths = [ "tests" ]
 xfail_strict = true
 
