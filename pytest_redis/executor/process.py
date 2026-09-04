@@ -53,6 +53,7 @@ class RedisExecutor(TCPExecutor):
         startup_timeout: int = 60,
         save: str = "",
         daemonize: str = "no",
+        *,
         rdbcompression: bool = True,
         rdbchecksum: bool = False,
         syslog_enabled: bool = False,

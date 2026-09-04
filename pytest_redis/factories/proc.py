@@ -31,6 +31,7 @@ def redis_proc(
     password: str | None = None,
     db_count: int | None = None,
     save: str | None = None,
+    *,
     compression: bool | None = None,
     checksum: bool | None = None,
     syslog: bool | None = None,

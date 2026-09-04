@@ -38,7 +38,7 @@ def _unavailable_stub() -> Callable[[pytest.FixtureRequest], AsyncIterator[Redis
 
 
 def redisdb_async(
-    process_fixture_name: str, dbnum: int = 0, decode: bool | None = None
+    process_fixture_name: str, dbnum: int = 0, *, decode: bool | None = None
 ) -> Callable[[pytest.FixtureRequest], AsyncIterator[Redis]]:
     """Create async connection fixture factory for pytest-redis.
 
