@@ -69,7 +69,7 @@ def test_redis_exec_configuration(
     (True, False),
 )
 def test_redis_exec(
-    request: FixtureRequest, tmp_path_factory: TempPathFactory, syslog_enabled: bool
+    request: FixtureRequest, tmp_path_factory: TempPathFactory, *, syslog_enabled: bool
 ) -> None:
     """Check if RedisExecutor properly starts with these configuration options.
 

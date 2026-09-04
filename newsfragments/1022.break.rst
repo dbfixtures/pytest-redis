@@ -1,0 +1,7 @@
+Boolean parameters are now keyword-only, and so are the parameters that follow them:
+
+* ``RedisExecutor``: ``rdbcompression``, ``rdbchecksum``, ``syslog_enabled``, ``appendonly``,
+  ``datadir`` and ``modules``
+* ``redis_proc``: ``compression``, ``checksum``, ``syslog``, ``loglevel``, ``datadir``
+  and ``modules``
+* ``redisdb`` and ``redisdb_async``: ``decode``
