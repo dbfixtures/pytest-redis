@@ -39,7 +39,7 @@ repos:
         additional_dependencies: [sphinx, toml]
 
   - repo: https://github.com/tox-dev/pyproject-fmt
-    rev: v2.28.1
+    rev: v2.28.2
     hooks:
       - id: pyproject-fmt
 
