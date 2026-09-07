@@ -4,7 +4,7 @@ requires = [ "uv-build>=0.12,<0.13" ]
 
 [project]
 name = "pytest-redis"
-version = "4.0.0"
+version = "5.0.0"
 description = "Redis fixtures and fixture factories for Pytest."
 readme = "README.rst"
 keywords = [ "fixture", "pytest", "redis", "tests" ]
@@ -49,7 +49,7 @@ async = [
 [project.urls]
 Source = "https://github.com/dbfixtures/pytest-redis"
 "Bug Tracker" = "https://github.com/dbfixtures/pytest-redis/issues"
-Changelog = "https://github.com/dbfixtures/pytest-redis/blob/v4.0.0/CHANGES.rst"
+Changelog = "https://github.com/dbfixtures/pytest-redis/blob/v5.0.0/CHANGES.rst"
 
 [project.entry-points.pytest11]
 pytest_redis = "pytest_redis.plugin"
@@ -132,7 +132,7 @@ message_template = "Release {new_version}"
 tag_template = "v{new_version}"
 
 [tool.tbump.version]
-current = "4.0.0"
+current = "5.0.0"
 regex = '''
   (?P<major>\d+)
   \.

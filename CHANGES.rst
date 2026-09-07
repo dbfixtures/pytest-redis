@@ -3,6 +3,51 @@ CHANGELOG
 
 .. towncrier release notes start
 
+pytest-redis 5.0.0 (2026-09-07)
+===============================
+
+Breaking changes
+----------------
+
+- Boolean parameters are now keyword-only, and so are the parameters that follow them:
+
+  * ``RedisExecutor``: ``rdbcompression``, ``rdbchecksum``, ``syslog_enabled``, ``appendonly``,
+    ``datadir`` and ``modules``
+  * ``redis_proc``: ``compression``, ``checksum``, ``syslog``, ``loglevel``, ``datadir``
+    and ``modules``
+  * ``redisdb`` and ``redisdb_async``: ``decode`` (`#1022 <https://github.com/dbfixtures/pytest-redis/issues/1022>`__)
+
+
+Features
+--------
+
+- Added ``redisdb_async``, a fixture and fixture factory providing an asynchronous
+  ``redis.asyncio.Redis`` client. Requires the new ``async`` extra
+  (``pip install 'pytest-redis[async]'``), which pulls in ``pytest-asyncio``. (`#852 <https://github.com/dbfixtures/pytest-redis/issues/852>`__)
+
+
+Miscellaneus
+------------
+
+- Raised the minimum supported ``redis`` to 5.0.1. (`#852 <https://github.com/dbfixtures/pytest-redis/issues/852>`__)
+- Add zizmor to pre-commit and set explicit minimal ``permissions`` on all workflow jobs (`#1018 <https://github.com/dbfixtures/pytest-redis/issues/1018>`__)
+- Add pyproject-fmt to pre-commit tools. (`#1019 <https://github.com/dbfixtures/pytest-redis/issues/1019>`__)
+- Migrate dev env and build system to uv (`#1020 <https://github.com/dbfixtures/pytest-redis/issues/1020>`__)
+- Add Python 3.15 to CI (`#1021 <https://github.com/dbfixtures/pytest-redis/issues/1021>`__)
+- Enabled Ruff's `FBT <https://docs.astral.sh/ruff/rules/#flake8-boolean-trap-fbt>`_ rules to detect boolean positional arguments. (`#1022 <https://github.com/dbfixtures/pytest-redis/issues/1022>`__)
+- Add release-schedule workflow replacing manual release workflow. (`#1027 <https://github.com/dbfixtures/pytest-redis/issues/1027>`__)
+- Migrated the Automerge workflow to `fizyk/actions-reuse` version 5.6.0. (`#1032 <https://github.com/dbfixtures/pytest-redis/issues/1032>`__)
+- Add actionlint to pre-commit (`#1033 <https://github.com/dbfixtures/pytest-redis/issues/1033>`__)
+- Configure Dependabot to update pre-commit dependencies. (`#1037 <https://github.com/dbfixtures/pytest-redis/issues/1037>`__)
+- Turn off autofix_prs and change pre-commit's autoupdate schedule to quarterly (`#1041 <https://github.com/dbfixtures/pytest-redis/issues/1041>`__)
+- Migrate tests to be based on `actions-reuse` new composite action `uv-pytest-coverage` (`#1043 <https://github.com/dbfixtures/pytest-redis/issues/1043>`__)
+- Add Redis 8.8 and 8.10 to testing matrix on CI
+- Improved coverage reliability in CI by switching to ``coverage run`` with explicit
+  ``coverage combine``/``coverage xml`` steps, enabling multiprocessing and subprocess
+  coverage aggregation, and using editable-install-safe include globs for package and
+  test paths.
+
+
 pytest-redis 4.0.0 (2026-02-28)
 ===============================
 
