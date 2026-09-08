@@ -1,0 +1,1 @@
+Autofix pyproject.toml with pyproject-fmt 2.28.2
