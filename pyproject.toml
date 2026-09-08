@@ -81,17 +81,17 @@ source-include = [ "CHANGES.rst" ]
 [tool.ruff]
 line-length = 100
 
-[tool.ruff.lint]
-select = [
-    "E",   # pycodestyle
-    "F",   # pyflakes
-    "I",   # isort
-    "D",   # pydocstyle
-    "FBT", # flake8-boolean-trap
-]
-
 [tool.ruff.lint.pydocstyle]
 convention = "pep257"
+
+[tool.ruff.lint]
+select = [
+    "D",   # pydocstyle
+    "E",   # pycodestyle
+    "F",   # pyflakes
+    "FBT", # flake8-boolean-trap
+    "I",   # isort
+]
 
 [tool.pyproject-fmt]
 column_width = 120
