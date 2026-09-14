@@ -47,22 +47,22 @@ jobs:
           path: ~/redis
           key: redis-${{ hashFiles('.download-redis.sh') }}
       - name: Set up uv with python ${{ matrix.python-version }}
-        uses: fizyk/actions-reuse/.github/actions/uv-setup@7eefbd6ffc6c6787ad3be6ce93dcf475e3ae99b5 # v5.6.0
+        uses: fizyk/actions-reuse/.github/actions/uv-setup@2ab3c94b032a11fca1238ef134690e589616739d # v5.7.0
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install oldest supported versions
-        uses: fizyk/actions-reuse/.github/actions/uv-run@7eefbd6ffc6c6787ad3be6ce93dcf475e3ae99b5 # v5.6.0
+        uses: fizyk/actions-reuse/.github/actions/uv-run@2ab3c94b032a11fca1238ef134690e589616739d # v5.7.0
         with:
           command: pip install -r oldest/requirements.txt
       - name: Run test on Redis ${{ matrix.redis-version }}
-        uses: fizyk/actions-reuse/.github/actions/uv-pytest-coverage@7eefbd6ffc6c6787ad3be6ce93dcf475e3ae99b5 # v5.6.0
+        uses: fizyk/actions-reuse/.github/actions/uv-pytest-coverage@2ab3c94b032a11fca1238ef134690e589616739d # v5.7.0
         with:
           pytest-opts: -c pyproject.oldest.toml -p no:xdist --redis-exec=$HOME/redis/redis-${{ matrix.redis-version }}/src/redis-server
           data-file: .coverage.serial
           output-file: coverage-serial.xml
 
       - name: Run xdist test on Redis ${{ matrix.redis-version }}
-        uses: fizyk/actions-reuse/.github/actions/uv-pytest-coverage@7eefbd6ffc6c6787ad3be6ce93dcf475e3ae99b5 # v5.6.0
+        uses: fizyk/actions-reuse/.github/actions/uv-pytest-coverage@2ab3c94b032a11fca1238ef134690e589616739d # v5.7.0
         with:
           pytest-opts: -c pyproject.oldest.toml -n auto --max-worker-restart=0 --redis-exec=$HOME/redis/redis-${{ matrix.redis-version }}/src/redis-server
           coverage-config: .coveragerc
