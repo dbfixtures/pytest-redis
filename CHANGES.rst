@@ -3,6 +3,18 @@ CHANGELOG
 
 .. towncrier release notes start
 
+pytest-redis 5.0.1 (2026-10-07)
+===============================
+
+Miscellaneus
+------------
+
+- Autofix pyproject.toml with pyproject-fmt 2.28.2 (`#1061 <https://github.com/dbfixtures/pytest-redis/issues/1061>`__)
+- Replace rhysd/actionlint with kjanat/actionlint (`#1063 <https://github.com/dbfixtures/pytest-redis/issues/1063>`__)
+- Autofix with zizmor 1.30.0 (`#1063 <https://github.com/dbfixtures/pytest-redis/issues/1063>`__)
+- Adjust shared-automerge permissions (`#1080 <https://github.com/dbfixtures/pytest-redis/issues/1080>`__)
+
+
 pytest-redis 5.0.0 (2026-09-07)
 ===============================
 
