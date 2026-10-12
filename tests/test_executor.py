@@ -3,11 +3,11 @@
 import socket
 from io import StringIO
 from typing import Any, Literal
+from unittest import mock
 
 import pytest
 import redis
 from mirakuru.exceptions import ProcessExitedWithError, TimeoutExpired
-from mock import mock
 from packaging.version import parse
 from port_for import get_port
 from pytest import FixtureRequest, TempPathFactory
@@ -245,7 +245,7 @@ def test_redis_modules_option(request: FixtureRequest, tmp_path_factory: TempPat
             redis_exec.start()
 
         logfilename = redis_exec.command_parts[redis_exec.command_parts.index("--logfile") + 1]
-        with open(logfilename, "r") as logfile:
+        with open(logfilename) as logfile:
             logfile_text = logfile.read()
         assert (
             "# Module nonexistent.so failed to load: nonexistent.so: cannot open shared object file"

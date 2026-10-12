@@ -1,7 +1,7 @@
 """Redis process fixture factory."""
 
+from collections.abc import Callable, Generator, Iterable
 from pathlib import Path
-from typing import Callable, Generator, Iterable
 
 import pytest
 from _pytest.fixtures import FixtureRequest

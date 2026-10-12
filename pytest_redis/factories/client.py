@@ -1,6 +1,7 @@
 """Redis client fixture factory."""
 
-from typing import Callable, Generator, Literal
+from collections.abc import Callable, Generator
+from typing import Literal
 
 import pytest
 import redis
@@ -43,9 +44,7 @@ def redisdb(
         redis_username = proc_fixture.username
         redis_password = proc_fixture.password
         redis_db = dbnum
-        decode_responses: Literal[True] | Literal[False] = (
-            decode if decode is not None else config.decode
-        )
+        decode_responses: Literal[True, False] = decode if decode is not None else config.decode
 
         redis_client = redis.Redis(
             redis_host,

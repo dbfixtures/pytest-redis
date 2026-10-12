@@ -1,6 +1,6 @@
 """Redis noop fixture factory."""
 
-from typing import Callable, Generator
+from collections.abc import Callable, Generator
 
 import pytest
 from _pytest.fixtures import FixtureRequest
