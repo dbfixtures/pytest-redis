@@ -132,7 +132,7 @@ class RedisExecutor(TCPExecutor):
         if save:
             if self.version < parse("7"):
                 save_parts = save.split()
-                assert all((part.isdigit() for part in save_parts)), (
+                assert all(part.isdigit() for part in save_parts), (
                     "all save arguments should be numbers"
                 )
                 assert len(save_parts) % 2 == 0, (

@@ -76,9 +76,7 @@ def redisdb_async(
         redis_username = proc_fixture.username
         redis_password = proc_fixture.password
         redis_db = dbnum
-        decode_responses: Literal[True] | Literal[False] = (
-            decode if decode is not None else config.decode
-        )
+        decode_responses: Literal[True, False] = decode if decode is not None else config.decode
 
         redis_client = Redis(
             host=redis_host,
