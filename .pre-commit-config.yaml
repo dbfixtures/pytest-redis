@@ -44,7 +44,7 @@ repos:
       - id: pyproject-fmt
 
   - repo: https://github.com/fizyk/pyproject-validator
-    rev: v0.1.1
+    rev: v1.0.0
     hooks:
       - id: check-python-version-consistency
 
