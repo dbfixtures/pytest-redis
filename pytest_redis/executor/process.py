@@ -3,6 +3,7 @@
 import os
 import platform
 import re
+import shlex
 from itertools import islice
 from pathlib import Path
 from tempfile import gettempdir
@@ -40,6 +41,29 @@ class RedisExecutor(TCPExecutor):
     Minimum required version of redis that is accepted by pytest-redis.
     """
 
+    MANAGED_OPTIONS: frozenset[str] = frozenset(
+        {
+            "daemonize",
+            "rdbcompression",
+            "rdbchecksum",
+            "appendonly",
+            "databases",
+            "timeout",
+            "pidfile",
+            "unixsocket",
+            "dbfilename",
+            "logfile",
+            "loglevel",
+            "syslog-enabled",
+            "bind",
+            "port",
+            "dir",
+        }
+    )
+    """
+    Options pytest-redis always sets itself, which can't be passed as extra options.
+    """
+
     def __init__(
         self,
         executable: str,
@@ -60,6 +84,7 @@ class RedisExecutor(TCPExecutor):
         appendonly: str = "no",
         datadir: Path | None = None,
         modules: list[str] | None = None,
+        options: list[str] | None = None,
     ) -> None:  # pylint:disable=too-many-locals
         """Init method of a RedisExecutor.
 
@@ -82,6 +107,8 @@ class RedisExecutor(TCPExecutor):
         :param datadir: location where all the process files will be located
         :param appendonly:
         :param modules: list of paths of Redis extension modules to load
+        :param options: extra redis-server options, each in redis.conf line
+            syntax (``name value``)
         """
         if not datadir:
             datadir = Path(gettempdir())
@@ -149,7 +176,58 @@ class RedisExecutor(TCPExecutor):
             for module_path in modules:
                 command.extend(["--loadmodule", module_path])
 
+        if options:
+            # requirepass is always refused, so the client fixtures know the password
+            set_by_setting = {"requirepass": "password"}
+            if save:
+                set_by_setting["save"] = "save"
+            if modules:
+                set_by_setting["loadmodule"] = "modules"
+            command.extend(self._extra_options(options, set_by_setting))
+
         super().__init__(command, host, port, timeout=startup_timeout)
+
+    @classmethod
+    def _extra_options(
+        cls, options: list[str], set_by_setting: dict[str, str] | None = None
+    ) -> list[str]:
+        """Turn redis.conf style lines into redis-server arguments.
+
+        :param options: entries such as ``"maxmemory 100mb"``
+        :param set_by_setting: options that come from a pytest-redis setting
+            in this run, mapped to that setting's name
+        :returns: arguments such as ``["--maxmemory", "100mb"]``
+        :raises RedisMisconfigured: if an entry can't be parsed, sets an option
+            pytest-redis sets itself, or has a value redis-server could read as
+            another option
+        """
+        set_by_setting = set_by_setting or {}
+        arguments = []
+        for option in options:
+            try:
+                parts = shlex.split(option)
+            except ValueError as exc:
+                raise RedisMisconfigured(f"Can't parse option {option!r}: {exc}") from exc
+            if not parts:
+                continue
+            name, *values = parts
+            if name.lower() in cls.MANAGED_OPTIONS:
+                raise RedisMisconfigured(
+                    f"pytest-redis sets {name!r} itself, "
+                    f"so it can't be passed in options: {option!r}"
+                )
+            if setting := set_by_setting.get(name.lower()):
+                raise RedisMisconfigured(
+                    f"Set {name!r} with the {setting!r} setting, not in options: {option!r}"
+                )
+            if any(value.startswith("--") for value in values):
+                # redis-server can read an argument starting with -- as a new option,
+                # which could set port
+                raise RedisMisconfigured(
+                    f"A value starting with '--' could be read as another option: {option!r}"
+                )
+            arguments.extend([f"--{name}", *values])
+        return arguments
 
     @classmethod
     def _redis_bool(cls, value: Any) -> Literal["yes", "no"]:

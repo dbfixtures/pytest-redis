@@ -326,6 +326,12 @@ You can pick which you prefer, but remember that these settings are handled in t
      - redis_modules (comma-separated string)
      - -
      - ""
+   * - Extra redis-server options, in redis.conf line syntax
+     - options (list of strings)
+     - --redis-option (repeat for each option)
+     - redis_options (one option per line)
+     - -
+     - ""
 
 Example usage:
 
@@ -350,6 +356,34 @@ Example usage:
 
     [pytest]
     redis_port = 8888
+
+Options ``redis_proc`` has no argument for, such as ``maxmemory``, go through ``options``.
+Each entry is a line as it would appear in ``redis.conf``, split the way a shell would split it,
+so quote a value that has spaces or backslashes in it. An entry for an option pytest-redis sets
+itself raises ``RedisMisconfigured``: ``bind``, ``port``, ``dir``, ``daemonize``, ``pidfile``,
+``logfile``, ``loglevel``, ``syslog-enabled``, ``unixsocket``, ``dbfilename``, ``databases``,
+``timeout``, ``appendonly``, ``rdbcompression``, ``rdbchecksum`` and ``requirepass`` (use
+``password``), plus ``save`` and ``loadmodule`` when ``save`` or ``modules`` is set.
+
+.. code-block:: python
+
+    redis_proc = factories.redis_proc(options=["maxmemory 100mb", "maxmemory-policy allkeys-lru"])
+
+.. code-block:: bash
+
+    pytest tests --redis-option "maxmemory 100mb" --redis-option "maxmemory-policy allkeys-lru"
+
+.. code-block:: ini
+
+    [pytest]
+    redis_options =
+        maxmemory 100mb
+        maxmemory-policy allkeys-lru
+
+.. code-block:: toml
+
+    [tool.pytest.ini_options]
+    redis_options = ["maxmemory 100mb", "maxmemory-policy allkeys-lru"]
 
 Options below are for configuring redis client fixture.
 
