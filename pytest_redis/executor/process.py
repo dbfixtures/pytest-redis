@@ -64,6 +64,11 @@ class RedisExecutor(TCPExecutor):
     Options pytest-redis always sets itself, which can't be passed as extra options.
     """
 
+    OPTION_NAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
+    """
+    What an option name passed in options may look like.
+    """
+
     def __init__(
         self,
         executable: str,
@@ -197,9 +202,9 @@ class RedisExecutor(TCPExecutor):
         :param set_by_setting: options that come from a pytest-redis setting
             in this run, mapped to that setting's name
         :returns: arguments such as ``["--maxmemory", "100mb"]``
-        :raises RedisMisconfigured: if an entry can't be parsed, sets an option
-            pytest-redis sets itself, or has a value redis-server could read as
-            another option
+        :raises RedisMisconfigured: if an entry can't be parsed, has a name that
+            isn't a plain option name, sets an option pytest-redis sets itself,
+            or has a value redis-server could read as another option
         """
         set_by_setting = set_by_setting or {}
         arguments = []
@@ -211,6 +216,9 @@ class RedisExecutor(TCPExecutor):
             if not parts:
                 continue
             name, *values = parts
+            if not cls.OPTION_NAME.fullmatch(name):
+                # redis-server doesn't quote option names, so "'port 6390'" would set port
+                raise RedisMisconfigured(f"{name!r} isn't a redis-server option name: {option!r}")
             if name.lower() in cls.MANAGED_OPTIONS:
                 raise RedisMisconfigured(
                     f"pytest-redis sets {name!r} itself, "

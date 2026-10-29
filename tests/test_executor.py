@@ -319,6 +319,8 @@ def test_redis_exec_options_with_several_values() -> None:
         ("save 60 1000", {"save": "900 1"}),
         ("loadmodule other.so", {"modules": ["module.so"]}),
         ('masterauth "no closing quote', {}),
+        ("'port 6390'", {}),
+        ("--port 6390", {}),
     ),
 )
 def test_redis_exec_options_clash(
