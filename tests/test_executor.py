@@ -1,5 +1,6 @@
 """Clean executor's tests."""
 
+import re
 import socket
 from io import StringIO
 from typing import Any, Literal
@@ -254,3 +255,94 @@ def test_redis_modules_option(request: FixtureRequest, tmp_path_factory: TempPat
         # cannot check for nonexistent2.so because Redis stops at first invalid module
     finally:
         redis_exec.stop()
+
+
+@pytest.mark.parametrize(
+    "options, config_option, value",
+    (
+        (["maxmemory 100mb"], "maxmemory", "104857600"),
+        (["maxmemory-policy allkeys-lru"], "maxmemory-policy", "allkeys-lru"),
+        (['masterauth "two words"'], "masterauth", "two words"),
+        (["", "maxmemory 1mb"], "maxmemory", "1048576"),
+        (["save 60 1000"], "save", "60 1000"),
+    ),
+)
+def test_redis_exec_options(
+    request: FixtureRequest,
+    tmp_path_factory: TempPathFactory,
+    options: list[str],
+    config_option: str,
+    value: str,
+) -> None:
+    """Check that extra options reach the running redis-server."""
+    config = get_config(request)
+    tmpdir = tmp_path_factory.mktemp("pytest-redis-test-test_redis_exec_options")
+    redis_port = get_port(None)
+    assert redis_port
+    redis_exec = RedisExecutor(
+        executable=config.exec,
+        databases=4,
+        redis_timeout=config.timeout,
+        loglevel=config.loglevel,
+        port=redis_port,
+        host=config.host,
+        startup_timeout=30,
+        datadir=tmpdir,
+        options=options,
+    )
+    with redis_exec:
+        redis_client = redis.StrictRedis(redis_exec.host, redis_exec.port, 0)
+        assert redis_client.config_get(config_option) == {config_option: value}
+
+
+def test_redis_exec_options_with_several_values() -> None:
+    """An option with several values keeps each value as its own argument."""
+    # pylint:disable=protected-access
+    assert RedisExecutor._extra_options(["client-output-buffer-limit pubsub 64mb 16mb 90"]) == [
+        "--client-output-buffer-limit",
+        "pubsub",
+        "64mb",
+        "16mb",
+        "90",
+    ]
+    # pylint:enable=protected-access
+
+
+@pytest.mark.parametrize(
+    "option, settings",
+    (
+        ("port 6390", {}),
+        ("dir /tmp", {}),
+        ("requirepass secret", {}),
+        ("PORT 6390", {}),
+        ("maxmemory 100mb --port 6390", {}),
+        ("save 60 1000", {"save": "900 1"}),
+        ("loadmodule other.so", {"modules": ["module.so"]}),
+        ('masterauth "no closing quote', {}),
+        ("'port 6390'", {}),
+        ("--port 6390", {}),
+    ),
+)
+def test_redis_exec_options_clash(
+    request: FixtureRequest,
+    tmp_path_factory: TempPathFactory,
+    option: str,
+    settings: dict[str, Any],
+) -> None:
+    """An option that pytest-redis sets itself, or that can't be parsed, is refused."""
+    config = get_config(request)
+    tmpdir = tmp_path_factory.mktemp("pytest-redis-test-test_redis_exec_options_clash")
+    redis_port = get_port(None)
+    assert redis_port
+    with pytest.raises(RedisMisconfigured, match=re.escape(repr(option))):
+        RedisExecutor(
+            executable=config.exec,
+            databases=4,
+            redis_timeout=config.timeout,
+            loglevel=config.loglevel,
+            port=redis_port,
+            host=config.host,
+            datadir=tmpdir,
+            options=[option],
+            **settings,
+        )
