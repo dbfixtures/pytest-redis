@@ -367,9 +367,11 @@ itself raises ``RedisMisconfigured``: ``bind``, ``port``, ``dir``, ``daemonize``
 ``include``, since the file it loads can set any of those, and a name that isn't a plain option
 name, such as one in quotes with a space in it.
 
-``user`` and ``aclfile`` are passed through, but the client fixtures connect only with ``username``
-and ``password``. A password either one sets on the ``default`` user is not known to them, so they
-fail with ``NOAUTH``; set that password with ``password`` instead.
+.. note::
+
+    ``user`` and ``aclfile`` are passed through, but the client fixtures connect only with
+    ``username`` and ``password``. A password either one sets on the ``default`` user is not
+    known to them, so they fail with ``NOAUTH``; set that password with ``password`` instead.
 
 .. code-block:: python
 
