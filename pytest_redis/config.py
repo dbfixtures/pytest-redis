@@ -26,6 +26,7 @@ class RedisConfig:
     decode: bool
     datadir: str
     modules: list[str]
+    options: list[str]
 
 
 def get_config(request: FixtureRequest) -> RedisConfig:
@@ -57,4 +58,5 @@ def get_config(request: FixtureRequest) -> RedisConfig:
         decode=bool(get_conf_option("decode")),
         datadir=get_conf_option("datadir"),
         modules=modules,
+        options=get_conf_option("options") or [],
     )

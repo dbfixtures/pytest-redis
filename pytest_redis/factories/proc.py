@@ -38,6 +38,7 @@ def redis_proc(
     loglevel: str | None = None,
     datadir: str | None = None,
     modules: list[str] | None = None,
+    options: list[str] | None = None,
 ) -> Callable[[FixtureRequest, TempPathFactory], Generator[RedisExecutor, None, None]]:
     """Fixture factory for pytest-redis.
 
@@ -63,6 +64,8 @@ def redis_proc(
         If this is not configured, then a temporary directory is created and used
         instead.
     :param modules: list of paths of Redis extension modules to load
+    :param options: extra redis-server options, each in redis.conf line
+        syntax, e.g. ``["maxmemory 100mb", "maxmemory-policy allkeys-lru"]``
     :returns: function which makes a redis process
     """
 
@@ -124,6 +127,7 @@ def redis_proc(
             redis_datadir = tmp_path_factory.mktemp(f"pytest-redis-{request.fixturename}")
 
         redis_modules = modules or config.modules
+        redis_options = options or config.options
 
         redis_executor = RedisExecutor(
             executable=redis_exec,
@@ -141,6 +145,7 @@ def redis_proc(
             startup_timeout=60,
             datadir=redis_datadir,
             modules=redis_modules,
+            options=redis_options,
         )
         with redis_executor:
             yield redis_executor

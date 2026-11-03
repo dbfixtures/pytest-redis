@@ -45,6 +45,12 @@ _help_decode = (
 )
 _help_datadir = "Directory where test Redis instance data files will be stored"
 _help_modules = "Comma separated list of paths to Redis extension modules to be loaded at startup"
+_help_options = (
+    "Extra redis-server options, one per line in redis.conf syntax, e.g. 'maxmemory 100mb'"
+)
+_help_option = (
+    "Extra redis-server option in redis.conf syntax, e.g. 'maxmemory 100mb'. Repeat for more"
+)
 
 
 def pytest_addoption(parser: Parser) -> None:
@@ -95,6 +101,7 @@ def pytest_addoption(parser: Parser) -> None:
     parser.addini(name="redis_decode", type="bool", help=_help_decode, default=False)
     parser.addini(name="redis_datadir", help=_help_datadir, default=None)
     parser.addini(name="redis_modules", help=_help_modules, default=None)
+    parser.addini(name="redis_options", type="linelist", help=_help_options, default=[])
 
     parser.addoption(
         "--redis-exec",
@@ -134,6 +141,7 @@ def pytest_addoption(parser: Parser) -> None:
     )
     parser.addoption("--redis-datadir", action="store", dest="redis_datadir", help=_help_datadir)
     parser.addoption("--redis-modules", action="store", dest="redis_modules", help=_help_modules)
+    parser.addoption("--redis-option", action="append", dest="redis_options", help=_help_option)
 
 
 redis_proc = pytest_redis.factories.proc.redis_proc()

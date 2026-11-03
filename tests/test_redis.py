@@ -1,7 +1,10 @@
 """Module containing all tests for pytest-redis."""
 
 import pytest
+from pytest import FixtureRequest, Pytester
 from redis.client import Redis
+
+from pytest_redis.config import get_config
 
 
 def test_redis(redisdb: Redis) -> None:
@@ -54,3 +57,105 @@ def test_external_redis_auth(redisdb3: Redis, redisdb3_noop: Redis) -> None:
 
     assert redisdb3_noop.get("test1") == b"test_other"
     assert redisdb3_noop.get("test2") == b"test_other"
+
+
+OPTIONS_TEST = """
+def test_options(redisdb):
+    assert redisdb.config_get("maxmemory") == {"maxmemory": "104857600"}
+    assert redisdb.config_get("maxmemory-policy") == {"maxmemory-policy": "allkeys-lru"}
+"""
+
+
+def test_redis_options_from_ini(pytester: Pytester, request: FixtureRequest) -> None:
+    """Extra options can be set in the configuration file."""
+    pytester.makeini(
+        """
+        [pytest]
+        redis_options =
+            maxmemory 100mb
+            maxmemory-policy allkeys-lru
+        """
+    )
+    pytester.makepyfile(OPTIONS_TEST)
+    result = pytester.runpytest(f"--redis-exec={get_config(request).exec}")
+    result.assert_outcomes(passed=1)
+
+
+def test_redis_options_from_command_line(pytester: Pytester, request: FixtureRequest) -> None:
+    """Extra options can be set on the command line, one per --redis-option."""
+    pytester.makepyfile(OPTIONS_TEST)
+    result = pytester.runpytest(
+        f"--redis-exec={get_config(request).exec}",
+        "--redis-option",
+        "maxmemory 100mb",
+        "--redis-option",
+        "maxmemory-policy allkeys-lru",
+    )
+    result.assert_outcomes(passed=1)
+
+
+def test_redis_options_from_factory(pytester: Pytester, request: FixtureRequest) -> None:
+    """Extra options can be passed to the redis_proc factory."""
+    pytester.makeconftest(
+        """
+        from pytest_redis import factories
+
+        redis_proc = factories.redis_proc(
+            options=["maxmemory 100mb", "maxmemory-policy allkeys-lru"]
+        )
+        """
+    )
+    pytester.makepyfile(OPTIONS_TEST)
+    result = pytester.runpytest(f"--redis-exec={get_config(request).exec}")
+    result.assert_outcomes(passed=1)
+
+
+def test_redis_options_command_line_replaces_ini(
+    pytester: Pytester, request: FixtureRequest
+) -> None:
+    """Options given on the command line replace the ones in the configuration file."""
+    pytester.makeini(
+        """
+        [pytest]
+        redis_options =
+            maxmemory 1mb
+        """
+    )
+    pytester.makepyfile(OPTIONS_TEST)
+    result = pytester.runpytest(
+        f"--redis-exec={get_config(request).exec}",
+        "--redis-option",
+        "maxmemory 100mb",
+        "--redis-option",
+        "maxmemory-policy allkeys-lru",
+    )
+    result.assert_outcomes(passed=1)
+
+
+def test_redis_options_factory_replaces_command_line_and_ini(
+    pytester: Pytester, request: FixtureRequest
+) -> None:
+    """Options passed to the factory replace the command line and configuration file ones."""
+    pytester.makeini(
+        """
+        [pytest]
+        redis_options =
+            maxmemory 1mb
+        """
+    )
+    pytester.makeconftest(
+        """
+        from pytest_redis import factories
+
+        redis_proc = factories.redis_proc(
+            options=["maxmemory 100mb", "maxmemory-policy allkeys-lru"]
+        )
+        """
+    )
+    pytester.makepyfile(OPTIONS_TEST)
+    result = pytester.runpytest(
+        f"--redis-exec={get_config(request).exec}",
+        "--redis-option",
+        "maxmemory 2mb",
+    )
+    result.assert_outcomes(passed=1)
