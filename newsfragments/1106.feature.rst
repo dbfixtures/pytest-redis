@@ -1,0 +1,1 @@
+Added ``options`` to ``redis_proc``, ``--redis-option`` and the ``redis_options`` ini setting, for passing any other ``redis-server`` option.
