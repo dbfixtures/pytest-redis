@@ -17,4 +17,4 @@
 # along with pytest-redis. If not, see <http://www.gnu.org/licenses/>.
 """Main module for pytest-redis."""
 
-__version__ = "5.0.1"
+__version__ = "5.1.0"

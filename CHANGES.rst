@@ -3,6 +3,24 @@ CHANGELOG
 
 .. towncrier release notes start
 
+pytest-redis 5.1.0 (2026-11-07)
+===============================
+
+Features
+--------
+
+- Add support for Python 3.15, drop support for Python 3.10 (`#1054 <https://github.com/dbfixtures/pytest-redis/issues/1054>`__)
+- Added ``options`` to ``redis_proc``, ``--redis-option`` and the ``redis_options`` ini setting, for passing any other ``redis-server`` option. (`#1106 <https://github.com/dbfixtures/pytest-redis/issues/1106>`__)
+
+
+Miscellaneus
+------------
+
+- Freeze all pre-commit hook revisions to commit SHAs. (`#1057 <https://github.com/dbfixtures/pytest-redis/issues/1057>`__)
+- Enable UP and PYI ruff rulesets. (`#1060 <https://github.com/dbfixtures/pytest-redis/issues/1060>`__)
+- Set dependabot's versioning-strategy explicitly to increase-if-necessary. (`#1098 <https://github.com/dbfixtures/pytest-redis/issues/1098>`__)
+
+
 pytest-redis 5.0.1 (2026-10-07)
 ===============================
 
