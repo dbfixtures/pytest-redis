@@ -353,12 +353,13 @@ def test_redis_exec_options_clash(
 def test_redis_exec_username_acl_arguments(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     """When username is provided on Redis 6+, --user argument is added to the command."""
     monkeypatch.setattr(RedisExecutor, "version", parse("7.0.0"))
+    captured_command: list[str] = []
     monkeypatch.setattr(
         "mirakuru.SimpleExecutor.__init__",
-        lambda self, command, *args, **kwargs: setattr(self, "command", command),
+        lambda self, command, *args, **kwargs: captured_command.extend(command),
     )
 
-    executor = RedisExecutor(
+    RedisExecutor(
         executable="redis-server",
         databases=1,
         redis_timeout=5,
@@ -369,9 +370,9 @@ def test_redis_exec_username_acl_arguments(monkeypatch: pytest.MonkeyPatch, tmp_
         password="secret",
         datadir=tmp_path,
     )
-    assert "--user" in executor.command
-    idx = executor.command.index("--user")
-    assert executor.command[idx : idx + 6] == ["--user", "tester", "on", ">secret", "~*", "+@all"]
+    assert "--user" in captured_command
+    idx = captured_command.index("--user")
+    assert captured_command[idx : idx + 6] == ["--user", "tester", "on", ">secret", "~*", "+@all"]
 
 
 def test_redis_exec_username_unsupported_on_redis_under_6(
