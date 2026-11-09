@@ -161,6 +161,14 @@ class RedisExecutor(TCPExecutor):
         ]
         if password:
             command.extend(["--requirepass", str(password)])
+        if username:
+            if self.version < parse("6"):
+                raise RedisMisconfigured(
+                    f"Redis version {self.version} does not support ACLs / users "
+                    "(requires Redis 6.0+)"
+                )
+            user_auth = f">{password}" if password else "nopass"
+            command.extend(["--user", str(username), "on", user_auth, "~*", "+@all"])
         if save:
             if self.version < parse("7"):
                 save_parts = save.split()
@@ -184,6 +192,8 @@ class RedisExecutor(TCPExecutor):
         if options:
             # requirepass is always refused, so the client fixtures know the password
             set_by_setting = {"requirepass": "password"}
+            if username:
+                set_by_setting["user"] = "username"
             if save:
                 set_by_setting["save"] = "save"
             if modules:

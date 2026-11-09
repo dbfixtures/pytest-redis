@@ -1,0 +1,1 @@
+Configure Redis ACL user on Redis 6+ when ``username`` is provided to ``redis_proc``, enabling authentication for client fixtures.

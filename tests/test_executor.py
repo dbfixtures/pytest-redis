@@ -3,6 +3,7 @@
 import re
 import socket
 from io import StringIO
+from pathlib import Path
 from typing import Any, Literal
 from unittest import mock
 
@@ -346,4 +347,64 @@ def test_redis_exec_options_clash(
             datadir=tmpdir,
             options=[option],
             **settings,
+        )
+
+
+def test_redis_exec_username_acl_arguments(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """When username is provided on Redis 6+, --user argument is added to the command."""
+    monkeypatch.setattr(RedisExecutor, "version", parse("7.0.0"))
+    monkeypatch.setattr(
+        "mirakuru.SimpleExecutor.__init__",
+        lambda self, command, *args, **kwargs: setattr(self, "command", command),
+    )
+
+    executor = RedisExecutor(
+        executable="redis-server",
+        databases=1,
+        redis_timeout=5,
+        loglevel="notice",
+        port=6379,
+        host="127.0.0.1",
+        username="tester",
+        password="secret",
+        datadir=tmp_path,
+    )
+    assert "--user" in executor.command
+    idx = executor.command.index("--user")
+    assert executor.command[idx : idx + 6] == ["--user", "tester", "on", ">secret", "~*", "+@all"]
+
+
+def test_redis_exec_username_unsupported_on_redis_under_6(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """When username is provided on Redis < 6, RedisMisconfigured is raised."""
+    monkeypatch.setattr(RedisExecutor, "version", parse("5.0.0"))
+    with pytest.raises(RedisMisconfigured, match="does not support ACLs"):
+        RedisExecutor(
+            executable="redis-server",
+            databases=1,
+            redis_timeout=5,
+            loglevel="notice",
+            port=6379,
+            host="127.0.0.1",
+            username="tester",
+            password="secret",
+            datadir=tmp_path,
+        )
+
+
+def test_redis_exec_username_options_clash(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """When username is configured and options also sets user, RedisMisconfigured is raised."""
+    monkeypatch.setattr(RedisExecutor, "version", parse("7.0.0"))
+    with pytest.raises(RedisMisconfigured, match="user"):
+        RedisExecutor(
+            executable="redis-server",
+            databases=1,
+            redis_timeout=5,
+            loglevel="notice",
+            port=6379,
+            host="127.0.0.1",
+            username="tester",
+            datadir=tmp_path,
+            options=["user other on nopass ~* +@all"],
         )
