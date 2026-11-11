@@ -56,7 +56,7 @@ pytest_redis = "pytest_redis.plugin"
 
 [dependency-groups]
 dev = [
-    "coverage==7.17.0",
+    "coverage==7.17.1",
     "mirakuru==3.1.0",
     "mock==5.2.0",
     "mypy==2.4.1; implementation_name=='cpython'",
