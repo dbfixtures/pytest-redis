@@ -120,9 +120,10 @@ def test_convert_bool(value: Any, redis_value: Literal["yes", "no"]) -> None:
     "version",
     (
         "Redis server version 2.4.14 (e9935407:0)",
-        "Redis server version 2.4.13 (e0935407:0)"
-        "Redis server version 2.5.0 (e9035407:0)"
+        "Redis server version 2.4.13 (e0935407:0)",
+        "Redis server version 2.5.0 (e9035407:0)",
         "Redis server version 2.3.10 (e9933407:0)",
+        "Redis server version 5.0.14 (e9933407:0)",
     ),
 )
 def test_old_redis_version(
@@ -351,8 +352,7 @@ def test_redis_exec_options_clash(
 
 
 def test_redis_exec_username_acl_arguments(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """When username is provided on Redis 6+, --user argument is added to the command."""
-    monkeypatch.setattr(RedisExecutor, "version", parse("7.0.0"))
+    """When username is provided, --user argument is added with password or nopass."""
     captured_command: list[str] = []
     monkeypatch.setattr(
         "mirakuru.SimpleExecutor.__init__",
@@ -374,24 +374,39 @@ def test_redis_exec_username_acl_arguments(monkeypatch: pytest.MonkeyPatch, tmp_
     idx = captured_command.index("--user")
     assert captured_command[idx : idx + 6] == ["--user", "tester", "on", ">secret", "~*", "+@all"]
 
+    captured_command.clear()
+    RedisExecutor(
+        executable="redis-server",
+        databases=1,
+        redis_timeout=5,
+        loglevel="notice",
+        port=6379,
+        host="127.0.0.1",
+        username="tester",
+        datadir=tmp_path,
+    )
+    assert "--user" in captured_command
+    idx2 = captured_command.index("--user")
+    assert captured_command[idx2 : idx2 + 6] == ["--user", "tester", "on", "nopass", "~*", "+@all"]
 
-def test_redis_exec_username_unsupported_on_redis_under_6(
+
+def test_redis_unsupported_on_redis_under_min_supported_version(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """When username is provided on Redis < 6, RedisMisconfigured is raised."""
+    """When Redis version is under MIN_SUPPORTED_VERSION, RedisUnsupported is raised on check."""
+    executor = RedisExecutor(
+        executable="redis-server",
+        databases=1,
+        redis_timeout=5,
+        loglevel="notice",
+        port=6379,
+        host="127.0.0.1",
+        username="tester",
+        datadir=tmp_path,
+    )
     monkeypatch.setattr(RedisExecutor, "version", parse("5.0.0"))
-    with pytest.raises(RedisMisconfigured, match="does not support ACLs"):
-        RedisExecutor(
-            executable="redis-server",
-            databases=1,
-            redis_timeout=5,
-            loglevel="notice",
-            port=6379,
-            host="127.0.0.1",
-            username="tester",
-            password="secret",
-            datadir=tmp_path,
-        )
+    with pytest.raises(RedisUnsupported, match="not supported"):
+        executor._check_version()
 
 
 def test_redis_exec_username_options_clash(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:

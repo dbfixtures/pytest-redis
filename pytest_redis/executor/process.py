@@ -36,7 +36,7 @@ class RedisExecutor(TCPExecutor):
     and properly constructing command to start redis-server.
     """
 
-    MIN_SUPPORTED_VERSION: Version = parse("2.6")
+    MIN_SUPPORTED_VERSION: Version = parse("6.0")
     """
     Minimum required version of redis that is accepted by pytest-redis.
     """
@@ -162,11 +162,6 @@ class RedisExecutor(TCPExecutor):
         if password:
             command.extend(["--requirepass", str(password)])
         if username:
-            if self.version < parse("6"):
-                raise RedisMisconfigured(
-                    f"Redis version {self.version} does not support ACLs / users "
-                    "(requires Redis 6.0+)"
-                )
             user_auth = f">{password}" if password else "nopass"
             command.extend(["--user", str(username), "on", user_auth, "~*", "+@all"])
         if save:
