@@ -124,6 +124,7 @@ def test_convert_bool(value: Any, redis_value: Literal["yes", "no"]) -> None:
         "Redis server version 2.5.0 (e9035407:0)",
         "Redis server version 2.3.10 (e9933407:0)",
         "Redis server version 5.0.14 (e9933407:0)",
+        "Redis server version 6.0.20 (e9933407:0)",
     ),
 )
 def test_old_redis_version(
@@ -393,7 +394,7 @@ def test_redis_exec_username_acl_arguments(monkeypatch: pytest.MonkeyPatch, tmp_
 def test_redis_unsupported_on_redis_under_min_supported_version(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """When Redis version is under MIN_SUPPORTED_VERSION, RedisUnsupported is raised on check."""
+    """When Redis version is under MIN_SUPPORTED_VERSION (6.2), RedisUnsupported is raised."""
     executor = RedisExecutor(
         executable="redis-server",
         databases=1,
@@ -404,9 +405,10 @@ def test_redis_unsupported_on_redis_under_min_supported_version(
         username="tester",
         datadir=tmp_path,
     )
-    monkeypatch.setattr(RedisExecutor, "version", parse("5.0.0"))
-    with pytest.raises(RedisUnsupported, match="not supported"):
-        executor._check_version()
+    for unsupported_version in ("5.0.0", "6.0.20"):
+        monkeypatch.setattr(RedisExecutor, "version", parse(unsupported_version))
+        with pytest.raises(RedisUnsupported, match="not supported"):
+            executor._check_version()
 
 
 def test_redis_exec_username_options_clash(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:

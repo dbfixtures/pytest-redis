@@ -36,7 +36,7 @@ class RedisExecutor(TCPExecutor):
     and properly constructing command to start redis-server.
     """
 
-    MIN_SUPPORTED_VERSION: Version = parse("6.0")
+    MIN_SUPPORTED_VERSION: Version = parse("6.2")
     """
     Minimum required version of redis that is accepted by pytest-redis.
     """

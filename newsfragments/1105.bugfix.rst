@@ -1,1 +1,1 @@
-Configure Redis ACL user when ``username`` is provided to ``redis_proc``, enabling authentication for client fixtures, and set ``MIN_SUPPORTED_VERSION`` to 6.0.
+Configure Redis ACL user when ``username`` is provided to ``redis_proc``, enabling authentication for client fixtures.
