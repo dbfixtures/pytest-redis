@@ -1,0 +1,1 @@
+Raise ``MIN_SUPPORTED_VERSION`` from Redis 2.6 to 6.2, matching the oldest upstream-supported and tested Redis release.

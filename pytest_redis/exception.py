@@ -2,7 +2,7 @@
 
 
 class RedisUnsupported(Exception):
-    """Exception raised when redis<2.6 would be detected."""
+    """Exception raised when an unsupported Redis version is detected."""
 
 
 class RedisMisconfigured(Exception):
