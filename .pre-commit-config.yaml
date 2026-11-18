@@ -55,7 +55,7 @@ repos:
         args: [--no-progress, --fix]
 
   - repo: https://github.com/kjanat/actionlint
-    rev: 08bb2c4f0d039744455b87aef1c647fb8b66d37b  # frozen: v1.17.0
+    rev: 220b76cfa568e00ed8b3c476898f849a722b88e2  # frozen: v1.17.1
     hooks:
       - id: actionlint
 
