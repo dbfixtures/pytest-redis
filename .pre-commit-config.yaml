@@ -1,6 +1,6 @@
 ---
 ci:
-  skip: [uv-sync, mypy]
+  skip: [uv-sync, mypy, ty]
   autofix_prs: false
   autoupdate_schedule: quarterly
 
@@ -31,6 +31,11 @@ repos:
       - id: ruff-check
         args: [--fix, --exit-non-zero-on-fix, --respect-gitignore, --show-fixes]
       - id: ruff-format
+
+  - repo: https://github.com/astral-sh/ty-pre-commit
+    rev: 96cf601960471a908938372419287b8f5d3df15b  # frozen: v0.0.109
+    hooks:
+      - id: ty
 
   - repo: https://github.com/rstcheck/rstcheck
     rev: ee160e7d8f0f9f25a9b37492312c23757b1ab38a  # frozen: v6.3.1
