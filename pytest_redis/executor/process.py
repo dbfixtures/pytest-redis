@@ -217,34 +217,24 @@ class RedisExecutor(TCPExecutor):
             try:
                 parts = shlex.split(option)
             except ValueError as exc:
-                raise RedisMisconfigured(f"Can't parse option {option!r}: {exc}") from exc
+                raise RedisMisconfigured.unparseable_option(option, exc) from exc
             if not parts:
                 continue
             name, *values = parts
             if not cls.OPTION_NAME.fullmatch(name):
                 # redis-server doesn't quote option names, so "'port 6390'" would set port
-                raise RedisMisconfigured(f"{name!r} isn't a redis-server option name: {option!r}")
+                raise RedisMisconfigured.invalid_option_name(name, option)
             if name.lower() in cls.MANAGED_OPTIONS:
-                raise RedisMisconfigured(
-                    f"pytest-redis sets {name!r} itself, "
-                    f"so it can't be passed in options: {option!r}"
-                )
+                raise RedisMisconfigured.managed_option(name, option)
             if name.lower() == "include":
                 # the included file is read too, and can set port, dir or requirepass
-                raise RedisMisconfigured(
-                    f"'include' loads a file that can change what pytest-redis sets, "
-                    f"so it can't be passed in options: {option!r}"
-                )
+                raise RedisMisconfigured.include_option_disallowed(option)
             if setting := set_by_setting.get(name.lower()):
-                raise RedisMisconfigured(
-                    f"Set {name!r} with the {setting!r} setting, not in options: {option!r}"
-                )
+                raise RedisMisconfigured.duplicate_setting_option(name, setting, option)
             if any(value.startswith("--") for value in values):
                 # redis-server can read an argument starting with -- as a new option,
                 # which could set port
-                raise RedisMisconfigured(
-                    f"A value starting with '--' could be read as another option: {option!r}"
-                )
+                raise RedisMisconfigured.option_value_starts_with_dash(option)
             arguments.extend([f"--{name}", *values])
         return arguments
 
@@ -268,15 +258,7 @@ class RedisExecutor(TCPExecutor):
     def _check_unixsocket_length(self) -> None:
         """Check unixsocket length."""
         if len(self.unixsocket) > MAX_UNIXSOCKET:
-            raise UnixSocketTooLong(
-                f"Unix Socket path is longer than {MAX_UNIXSOCKET} "
-                f"allowed on your system: {self.unixsocket}. "
-                f"It's probably due to the temporary directory configuration. "
-                f"You can configure that for python by changing TMPDIR envvar, "
-                f"add for example `--basetemp=/tmp/pytest` to your pytest "
-                f"command or add `addopts = --basetemp=/tmp/pytest` to your "
-                f"pytest configuration file."
-            )
+            raise UnixSocketTooLong.path_too_long(MAX_UNIXSOCKET, self.unixsocket)
 
     @property
     def version(self) -> Any:
@@ -284,9 +266,7 @@ class RedisExecutor(TCPExecutor):
         with os.popen(f"{self.executable} --version") as version_output:
             version_string = version_output.read()
         if not version_string:
-            raise RedisMisconfigured(
-                f"Bad path to redis_exec is given: {self.executable} not exists or wrong program"
-            )
+            raise RedisMisconfigured.invalid_executable(self.executable)
 
         return extract_version(version_string)
 
@@ -294,8 +274,4 @@ class RedisExecutor(TCPExecutor):
         """Check redises version if it's compatible."""
         redis_version = self.version
         if redis_version < self.MIN_SUPPORTED_VERSION:
-            raise RedisUnsupported(
-                f"Your version of Redis is not supported. "
-                f"Consider updating to Redis {self.MIN_SUPPORTED_VERSION} at least. "
-                f"The currently installed version of Redis: {redis_version}."
-            )
+            raise RedisUnsupported.unsupported_version(self.MIN_SUPPORTED_VERSION, redis_version)

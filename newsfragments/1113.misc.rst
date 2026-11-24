@@ -1,0 +1,1 @@
+Move exception message formatting into classmethods on ``RedisUnsupported``, ``RedisMisconfigured``, and ``UnixSocketTooLong``.
