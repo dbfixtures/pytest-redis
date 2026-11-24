@@ -1,0 +1,1 @@
+Enable Ruff ``A`` (flake8-builtins) and ``N`` (pep8-naming) lint rules.

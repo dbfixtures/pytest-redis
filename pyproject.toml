@@ -87,14 +87,20 @@ convention = "pep257"
 
 [tool.ruff.lint]
 select = [
+    "A",   # flake8-builtins
     "D",   # pydocstyle
     "E",   # pycodestyle
     "F",   # pyflakes
     "FBT", # flake8-boolean-trap
     "I",   # isort
+    "N",   # pep8-naming
     "PYI", # flake8-pyi
     "UP",  # pyupgrade
 ]
+
+[tool.ruff.lint.per-file-ignores]
+# Renaming public exception classes (RedisUnsupported, RedisMisconfigured, UnixSocketTooLong) would break callers.
+"pytest_redis/exception.py" = ["N818"]
 
 [tool.pyproject-fmt]
 column_width = 120
