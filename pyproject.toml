@@ -93,7 +93,22 @@ select = [
     "FBT", # flake8-boolean-trap
     "I",   # isort
     "PYI", # flake8-pyi
+    "S",   # flake8-bandit
     "UP",  # pyupgrade
+]
+
+[tool.ruff.lint.per-file-ignores]
+# S603: pytest-redis spawns redis-server as its core purpose.
+"pytest_redis/executor/process.py" = [
+    "S101", # extract_version is tested to raise AssertionError on unparseable input
+    "S603", # subprocess.run invokes the configured redis-server executable
+]
+"pytest_redis/plugin.py" = [
+    "S105", # _help_password is a CLI help string, not a hardcoded password
+]
+"tests/**/*.py" = [
+    "S101", # pytest relies on assert statements in tests
+    "S106", # test fixtures pass dummy passwords to verify auth configuration
 ]
 
 [tool.pyproject-fmt]

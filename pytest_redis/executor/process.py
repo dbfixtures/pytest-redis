@@ -1,9 +1,9 @@
 """Redis executor."""
 
-import os
 import platform
 import re
 import shlex
+import subprocess
 from itertools import islice
 from pathlib import Path
 from tempfile import gettempdir
@@ -281,8 +281,16 @@ class RedisExecutor(TCPExecutor):
     @property
     def version(self) -> Any:
         """Return redis version."""
-        with os.popen(f"{self.executable} --version") as version_output:
-            version_string = version_output.read()
+        try:
+            result = subprocess.run(
+                [self.executable, "--version"],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            version_string = result.stdout
+        except OSError:
+            version_string = ""
         if not version_string:
             raise RedisMisconfigured(
                 f"Bad path to redis_exec is given: {self.executable} not exists or wrong program"

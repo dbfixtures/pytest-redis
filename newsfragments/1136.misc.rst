@@ -1,0 +1,1 @@
+Enable Ruff ``S`` (flake8-bandit) security lint rules and replace ``os.popen`` with ``subprocess.run``.
