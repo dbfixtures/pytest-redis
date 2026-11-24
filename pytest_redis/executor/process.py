@@ -174,7 +174,7 @@ class RedisExecutor(TCPExecutor):
                     "there should be even number of elements passed to save"
                 )
                 for time, change in zip(
-                    islice(save_parts, 0, None, 2), islice(save_parts, 1, None, 2)
+                    islice(save_parts, 0, None, 2), islice(save_parts, 1, None, 2), strict=True
                 ):
                     command.extend([f"--save {time} {change}"])
             else:
