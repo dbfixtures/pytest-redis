@@ -133,20 +133,22 @@ def test_old_redis_version(
     """Test how fixture behaves in case of old redis version."""
     config = get_config(request)
     tmpdir = tmp_path_factory.mktemp("pytest-redis-test-test_old_redis_version")
-    with mock.patch("os.popen", lambda *args: StringIO(version)):
-        with pytest.raises(RedisUnsupported):
-            redis_port = get_port(None)
-            assert redis_port
-            RedisExecutor(
-                config.exec,
-                databases=4,
-                redis_timeout=config.timeout,
-                loglevel=config.loglevel,
-                port=redis_port,
-                host=config.host,
-                startup_timeout=30,
-                datadir=tmpdir,
-            ).start()
+    with (
+        mock.patch("os.popen", lambda *args: StringIO(version)),
+        pytest.raises(RedisUnsupported),
+    ):
+        redis_port = get_port(None)
+        assert redis_port
+        RedisExecutor(
+            config.exec,
+            databases=4,
+            redis_timeout=config.timeout,
+            loglevel=config.loglevel,
+            port=redis_port,
+            host=config.host,
+            startup_timeout=30,
+            datadir=tmpdir,
+        ).start()
 
 
 def test_not_existing_redis(request: FixtureRequest, tmp_path_factory: TempPathFactory) -> None:
