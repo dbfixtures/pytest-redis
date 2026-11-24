@@ -1,0 +1,1 @@
+Enable Ruff ``C4``, ``FLY``, ``FURB``, ``PERF``, ``PIE``, ``PLC``, ``PLR``, ``PTH``, ``RET``, and ``RSE`` lint rules.
