@@ -93,7 +93,12 @@ select = [
     "FBT", # flake8-boolean-trap
     "I",   # isort
     "PYI", # flake8-pyi
+    "TRY", # tryceratops
     "UP",  # pyupgrade
+]
+
+ignore = [
+    "TRY003", # exception messages are still constructed at raise sites (tracked in #1113)
 ]
 
 [tool.pyproject-fmt]
