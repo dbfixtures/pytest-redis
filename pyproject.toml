@@ -92,6 +92,7 @@ select = [
     "F",   # pyflakes
     "FBT", # flake8-boolean-trap
     "I",   # isort
+    "PT",  # flake8-pytest-style
     "PYI", # flake8-pyi
     "UP",  # pyupgrade
 ]

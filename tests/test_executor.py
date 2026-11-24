@@ -12,7 +12,6 @@ import redis
 from mirakuru.exceptions import ProcessExitedWithError, TimeoutExpired
 from packaging.version import parse
 from port_for import get_port
-from pytest import FixtureRequest, TempPathFactory
 
 from pytest_redis.config import get_config
 from pytest_redis.exception import RedisMisconfigured, RedisUnsupported, UnixSocketTooLong
@@ -24,19 +23,19 @@ from pytest_redis.executor.process import extract_version
 
 
 @pytest.mark.parametrize(
-    "parameter, config_option, value",
-    (
+    ("parameter", "config_option", "value"),
+    [
         ({"save": "900 1 300 10"}, "save", "900 1 300 10"),
         ({"save": "900 1"}, "save", "900 1"),
         ({"rdbcompression": True}, "rdbcompression", "yes"),
         ({"rdbcompression": False}, "rdbcompression", "no"),
         ({"rdbchecksum": True}, "rdbchecksum", "yes"),
         ({"rdbchecksum": False}, "rdbchecksum", "no"),
-    ),
+    ],
 )
 def test_redis_exec_configuration(
-    request: FixtureRequest,
-    tmp_path_factory: TempPathFactory,
+    request: pytest.FixtureRequest,
+    tmp_path_factory: pytest.TempPathFactory,
     parameter: dict[str, Any],
     config_option: str,
     value: str,
@@ -68,10 +67,13 @@ def test_redis_exec_configuration(
 
 @pytest.mark.parametrize(
     "syslog_enabled",
-    (True, False),
+    [True, False],
 )
 def test_redis_exec(
-    request: FixtureRequest, tmp_path_factory: TempPathFactory, *, syslog_enabled: bool
+    request: pytest.FixtureRequest,
+    tmp_path_factory: pytest.TempPathFactory,
+    *,
+    syslog_enabled: bool,
 ) -> None:
     """Check if RedisExecutor properly starts with these configuration options.
 
@@ -97,8 +99,8 @@ def test_redis_exec(
 
 
 @pytest.mark.parametrize(
-    "value, redis_value",
-    (
+    ("value", "redis_value"),
+    [
         (True, "yes"),
         (1, "yes"),
         ("str", "yes"),
@@ -107,7 +109,7 @@ def test_redis_exec(
         (0, "no"),
         ("", "no"),
         ("no", "no"),
-    ),
+    ],
 )
 def test_convert_bool(value: Any, redis_value: Literal["yes", "no"]) -> None:
     """Check correctness of the redis_bool method."""
@@ -118,25 +120,25 @@ def test_convert_bool(value: Any, redis_value: Literal["yes", "no"]) -> None:
 
 @pytest.mark.parametrize(
     "version",
-    (
+    [
         "Redis server version 2.4.14 (e9935407:0)",
         "Redis server version 2.4.13 (e0935407:0)",
         "Redis server version 2.5.0 (e9035407:0)",
         "Redis server version 2.3.10 (e9933407:0)",
         "Redis server version 5.0.14 (e9933407:0)",
         "Redis server version 6.0.20 (e9933407:0)",
-    ),
+    ],
 )
 def test_old_redis_version(
-    request: FixtureRequest, tmp_path_factory: TempPathFactory, version: str
+    request: pytest.FixtureRequest, tmp_path_factory: pytest.TempPathFactory, version: str
 ) -> None:
     """Test how fixture behaves in case of old redis version."""
     config = get_config(request)
     tmpdir = tmp_path_factory.mktemp("pytest-redis-test-test_old_redis_version")
-    with mock.patch("os.popen", lambda *args: StringIO(version)):
+    redis_port = get_port(None)
+    assert redis_port
+    with mock.patch("os.popen", return_value=StringIO(version)):
         with pytest.raises(RedisUnsupported):
-            redis_port = get_port(None)
-            assert redis_port
             RedisExecutor(
                 config.exec,
                 databases=4,
@@ -149,13 +151,15 @@ def test_old_redis_version(
             ).start()
 
 
-def test_not_existing_redis(request: FixtureRequest, tmp_path_factory: TempPathFactory) -> None:
+def test_not_existing_redis(
+    request: pytest.FixtureRequest, tmp_path_factory: pytest.TempPathFactory
+) -> None:
     """Check handling of misconfigured redis executable path."""
     config = get_config(request)
     tmpdir = tmp_path_factory.mktemp("pytest-redis-test-test_not_existing_redis")
+    redis_port = get_port(None)
+    assert redis_port
     with pytest.raises(RedisMisconfigured):
-        redis_port = get_port(None)
-        assert redis_port
         RedisExecutor(
             "/not/redis/here/redis-server",
             databases=4,
@@ -168,13 +172,15 @@ def test_not_existing_redis(request: FixtureRequest, tmp_path_factory: TempPathF
         ).start()
 
 
-def test_too_long_unixsocket(request: FixtureRequest, tmp_path_factory: TempPathFactory) -> None:
+def test_too_long_unixsocket(
+    request: pytest.FixtureRequest, tmp_path_factory: pytest.TempPathFactory
+) -> None:
     """Check handling of misconfigured redis executable path."""
     config = get_config(request)
     tmpdir = tmp_path_factory.mktemp("x" * 110)
+    redis_port = get_port(None)
+    assert redis_port
     with pytest.raises(UnixSocketTooLong):
-        redis_port = get_port(None)
-        assert redis_port
         RedisExecutor(
             config.exec,
             databases=4,
@@ -188,7 +194,7 @@ def test_too_long_unixsocket(request: FixtureRequest, tmp_path_factory: TempPath
 
 
 @pytest.mark.parametrize(
-    "text,result",
+    ("text", "result"),
     [
         ("Redis server version 2.4.14 (00000000:0)", "2.4.14"),
         ("Redis server v=2.6.13 sha=00000000:0 malloc=jemalloc-3.3.1 bits=64", "2.6.13"),
@@ -224,7 +230,9 @@ def test_noopredis_handles_timeout_when_waiting() -> None:
         socket_mock.connect.assert_called()
 
 
-def test_redis_modules_option(request: FixtureRequest, tmp_path_factory: TempPathFactory) -> None:
+def test_redis_modules_option(
+    request: pytest.FixtureRequest, tmp_path_factory: pytest.TempPathFactory
+) -> None:
     """Set 'module' keyword argument and check command line."""
     config = get_config(request)
     tmpdir = tmp_path_factory.mktemp("pytest-redis-test-test_redis_exec_configuration")
@@ -261,18 +269,18 @@ def test_redis_modules_option(request: FixtureRequest, tmp_path_factory: TempPat
 
 
 @pytest.mark.parametrize(
-    "options, config_option, value",
-    (
+    ("options", "config_option", "value"),
+    [
         (["maxmemory 100mb"], "maxmemory", "104857600"),
         (["maxmemory-policy allkeys-lru"], "maxmemory-policy", "allkeys-lru"),
         (['masterauth "two words"'], "masterauth", "two words"),
         (["", "maxmemory 1mb"], "maxmemory", "1048576"),
         (["save 60 1000"], "save", "60 1000"),
-    ),
+    ],
 )
 def test_redis_exec_options(
-    request: FixtureRequest,
-    tmp_path_factory: TempPathFactory,
+    request: pytest.FixtureRequest,
+    tmp_path_factory: pytest.TempPathFactory,
     options: list[str],
     config_option: str,
     value: str,
@@ -312,8 +320,8 @@ def test_redis_exec_options_with_several_values() -> None:
 
 
 @pytest.mark.parametrize(
-    "option, settings",
-    (
+    ("option", "settings"),
+    [
         ("port 6390", {}),
         ("dir /tmp", {}),
         ("include /tmp/extra.conf", {}),
@@ -325,11 +333,11 @@ def test_redis_exec_options_with_several_values() -> None:
         ('masterauth "no closing quote', {}),
         ("'port 6390'", {}),
         ("--port 6390", {}),
-    ),
+    ],
 )
 def test_redis_exec_options_clash(
-    request: FixtureRequest,
-    tmp_path_factory: TempPathFactory,
+    request: pytest.FixtureRequest,
+    tmp_path_factory: pytest.TempPathFactory,
     option: str,
     settings: dict[str, Any],
 ) -> None:

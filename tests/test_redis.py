@@ -1,7 +1,6 @@
 """Module containing all tests for pytest-redis."""
 
 import pytest
-from pytest import FixtureRequest, Pytester
 from redis.client import Redis
 
 from pytest_redis.config import get_config
@@ -66,7 +65,7 @@ def test_options(redisdb):
 """
 
 
-def test_redis_options_from_ini(pytester: Pytester, request: FixtureRequest) -> None:
+def test_redis_options_from_ini(pytester: pytest.Pytester, request: pytest.FixtureRequest) -> None:
     """Extra options can be set in the configuration file."""
     pytester.makeini(
         """
@@ -81,7 +80,9 @@ def test_redis_options_from_ini(pytester: Pytester, request: FixtureRequest) -> 
     result.assert_outcomes(passed=1)
 
 
-def test_redis_options_from_command_line(pytester: Pytester, request: FixtureRequest) -> None:
+def test_redis_options_from_command_line(
+    pytester: pytest.Pytester, request: pytest.FixtureRequest
+) -> None:
     """Extra options can be set on the command line, one per --redis-option."""
     pytester.makepyfile(OPTIONS_TEST)
     result = pytester.runpytest(
@@ -94,7 +95,9 @@ def test_redis_options_from_command_line(pytester: Pytester, request: FixtureReq
     result.assert_outcomes(passed=1)
 
 
-def test_redis_options_from_factory(pytester: Pytester, request: FixtureRequest) -> None:
+def test_redis_options_from_factory(
+    pytester: pytest.Pytester, request: pytest.FixtureRequest
+) -> None:
     """Extra options can be passed to the redis_proc factory."""
     pytester.makeconftest(
         """
@@ -111,7 +114,7 @@ def test_redis_options_from_factory(pytester: Pytester, request: FixtureRequest)
 
 
 def test_redis_options_command_line_replaces_ini(
-    pytester: Pytester, request: FixtureRequest
+    pytester: pytest.Pytester, request: pytest.FixtureRequest
 ) -> None:
     """Options given on the command line replace the ones in the configuration file."""
     pytester.makeini(
@@ -133,7 +136,7 @@ def test_redis_options_command_line_replaces_ini(
 
 
 def test_redis_options_factory_replaces_command_line_and_ini(
-    pytester: Pytester, request: FixtureRequest
+    pytester: pytest.Pytester, request: pytest.FixtureRequest
 ) -> None:
     """Options passed to the factory replace the command line and configuration file ones."""
     pytester.makeini(
