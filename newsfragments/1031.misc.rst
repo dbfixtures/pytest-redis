@@ -1,0 +1,1 @@
+Enable Ruff ``ANN401`` lint rule.

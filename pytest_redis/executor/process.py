@@ -7,7 +7,7 @@ import shlex
 from itertools import islice
 from pathlib import Path
 from tempfile import gettempdir
-from typing import Any, Literal
+from typing import Literal
 
 from mirakuru import TCPExecutor
 from packaging.version import Version, parse
@@ -249,7 +249,7 @@ class RedisExecutor(TCPExecutor):
         return arguments
 
     @classmethod
-    def _redis_bool(cls, value: Any) -> Literal["yes", "no"]:
+    def _redis_bool(cls, value: object) -> Literal["yes", "no"]:
         """Convert the boolean value to redis's yes/no.
 
         :param bool value: boolean value to convert
@@ -279,7 +279,7 @@ class RedisExecutor(TCPExecutor):
             )
 
     @property
-    def version(self) -> Any:
+    def version(self) -> Version:
         """Return redis version."""
         with os.popen(f"{self.executable} --version") as version_output:
             version_string = version_output.read()

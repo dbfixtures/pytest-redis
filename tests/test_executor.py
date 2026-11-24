@@ -109,7 +109,7 @@ def test_redis_exec(
         ("no", "no"),
     ),
 )
-def test_convert_bool(value: Any, redis_value: Literal["yes", "no"]) -> None:
+def test_convert_bool(value: object, redis_value: Literal["yes", "no"]) -> None:
     """Check correctness of the redis_bool method."""
     # pylint:disable=protected-access
     assert RedisExecutor._redis_bool(value) == redis_value
