@@ -1,0 +1,1 @@
+Validate files loaded by ``include`` in ``options`` so safe ``redis.conf`` includes are allowed.
