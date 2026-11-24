@@ -1,0 +1,1 @@
+Enabled ``G``, ``LOG``, and ``T20`` ruff lint rule groups.

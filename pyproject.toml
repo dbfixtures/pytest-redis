@@ -91,8 +91,11 @@ select = [
     "E",   # pycodestyle
     "F",   # pyflakes
     "FBT", # flake8-boolean-trap
+    "G",   # flake8-logging-format
     "I",   # isort
+    "LOG", # flake8-logging
     "PYI", # flake8-pyi
+    "T20", # flake8-print
     "UP",  # pyupgrade
 ]
 
