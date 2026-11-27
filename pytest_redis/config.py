@@ -37,10 +37,7 @@ def get_config(request: FixtureRequest) -> RedisConfig:
         return request.config.getoption(option_name) or request.config.getini(option_name)
 
     port = get_conf_option("port")
-    if modules := get_conf_option("modules"):
-        modules = modules.split(",")
-    else:
-        modules = []
+    modules = modules.split(",") if (modules := get_conf_option("modules")) else []
     return RedisConfig(
         host=get_conf_option("host"),
         port=int(port) if port else None,

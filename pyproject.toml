@@ -93,6 +93,7 @@ select = [
     "FBT", # flake8-boolean-trap
     "I",   # isort
     "PYI", # flake8-pyi
+    "SIM", # flake8-simplify
     "UP",  # pyupgrade
 ]
 

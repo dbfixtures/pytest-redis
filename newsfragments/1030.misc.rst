@@ -1,0 +1,1 @@
+Enable Ruff ``SIM`` (flake8-simplify) lint rules.
