@@ -316,7 +316,6 @@ def test_redis_exec_options_with_several_values() -> None:
     (
         ("port 6390", {}),
         ("dir /tmp", {}),
-        ("include /tmp/extra.conf", {}),
         ("requirepass secret", {}),
         ("PORT 6390", {}),
         ("maxmemory 100mb --port 6390", {}),
@@ -425,4 +424,43 @@ def test_redis_exec_username_options_clash(monkeypatch: pytest.MonkeyPatch, tmp_
             username="tester",
             datadir=tmp_path,
             options=["user other on nopass ~* +@all"],
+        )
+
+
+def test_executor_allows_safe_included_conf(tmp_path: Path) -> None:
+    """An included config file without managed options is allowed."""
+    extra_conf = tmp_path / "extra.conf"
+    extra_conf.write_text("# comment\nmaxmemory 64mb\n", encoding="utf-8")
+
+    executor = RedisExecutor(
+        executable="redis-server",
+        databases=1,
+        redis_timeout=5,
+        loglevel="notice",
+        port=6379,
+        host="127.0.0.1",
+        datadir=tmp_path,
+        options=[f"include {extra_conf}"],
+    )
+    assert "--include" in executor.command
+    assert str(extra_conf) in executor.command
+
+
+def test_executor_rejects_managed_option_in_included_conf(tmp_path: Path) -> None:
+    """An included config file setting a managed option is rejected with file and line."""
+    nested_conf = tmp_path / "nested.conf"
+    nested_conf.write_text("maxmemory 64mb\nport 6390\n", encoding="utf-8")
+    top_conf = tmp_path / "top.conf"
+    top_conf.write_text(f"include {nested_conf}\n", encoding="utf-8")
+
+    with pytest.raises(RedisMisconfigured, match="nested.conf:2"):
+        RedisExecutor(
+            executable="redis-server",
+            databases=1,
+            redis_timeout=5,
+            loglevel="notice",
+            port=6379,
+            host="127.0.0.1",
+            datadir=tmp_path,
+            options=[f"include {top_conf}"],
         )

@@ -4,6 +4,7 @@ import os
 import platform
 import re
 import shlex
+from glob import glob
 from itertools import islice
 from pathlib import Path
 from tempfile import gettempdir
@@ -230,11 +231,9 @@ class RedisExecutor(TCPExecutor):
                     f"so it can't be passed in options: {option!r}"
                 )
             if name.lower() == "include":
-                # the included file is read too, and can set port, dir or requirepass
-                raise RedisMisconfigured(
-                    f"'include' loads a file that can change what pytest-redis sets, "
-                    f"so it can't be passed in options: {option!r}"
-                )
+                if not values:
+                    raise RedisMisconfigured(f"'include' requires a path pattern: {option!r}")
+                cls._validate_include(values[0], set_by_setting, seen=set())
             if setting := set_by_setting.get(name.lower()):
                 raise RedisMisconfigured(
                     f"Set {name!r} with the {setting!r} setting, not in options: {option!r}"
@@ -247,6 +246,52 @@ class RedisExecutor(TCPExecutor):
                 )
             arguments.extend([f"--{name}", *values])
         return arguments
+
+    @classmethod
+    def _validate_include(
+        cls,
+        pattern: str,
+        set_by_setting: dict[str, str],
+        *,
+        seen: set[Path],
+    ) -> None:
+        """Validate redis.conf files matched by an ``include`` directive."""
+        matches = sorted(glob(pattern, recursive=False))
+        for match in matches:
+            conf_path = Path(match).resolve()
+            if conf_path in seen or not conf_path.is_file():
+                continue
+            seen.add(conf_path)
+            for line_no, raw_line in enumerate(
+                conf_path.read_text(encoding="utf-8").splitlines(), 1
+            ):
+                stripped = raw_line.strip()
+                if not stripped or stripped.startswith("#"):
+                    continue
+                try:
+                    parts = shlex.split(stripped, comments=True)
+                except ValueError as exc:
+                    raise RedisMisconfigured(
+                        f"Can't parse {conf_path}:{line_no} ({stripped!r}): {exc}"
+                    ) from exc
+                if not parts:
+                    continue
+                inc_name, *inc_values = parts
+                if inc_name.lower() in cls.MANAGED_OPTIONS:
+                    raise RedisMisconfigured(
+                        f"{conf_path}:{line_no} sets {inc_name!r}, which pytest-redis sets itself"
+                    )
+                if setting := set_by_setting.get(inc_name.lower()):
+                    raise RedisMisconfigured(
+                        f"{conf_path}:{line_no} sets {inc_name!r}; "
+                        f"use the {setting!r} setting instead"
+                    )
+                if inc_name.lower() == "include":
+                    if not inc_values:
+                        raise RedisMisconfigured(
+                            f"{conf_path}:{line_no}: 'include' requires a path pattern"
+                        )
+                    cls._validate_include(inc_values[0], set_by_setting, seen=seen)
 
     @classmethod
     def _redis_bool(cls, value: Any) -> Literal["yes", "no"]:
