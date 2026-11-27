@@ -1,7 +1,7 @@
 """Config loading helpers."""
 
 from dataclasses import dataclass
-from typing import Any
+from typing import cast
 
 from _pytest.fixtures import FixtureRequest
 
@@ -32,31 +32,32 @@ class RedisConfig:
 def get_config(request: FixtureRequest) -> RedisConfig:
     """Return a RedisConfig with config options."""
 
-    def get_conf_option(option: str) -> Any:
+    def get_conf_option(option: str) -> object:
         option_name = "redis_" + option
         return request.config.getoption(option_name) or request.config.getini(option_name)
 
-    port = get_conf_option("port")
-    if modules := get_conf_option("modules"):
-        modules = modules.split(",")
+    port = cast(int | str | None, get_conf_option("port"))
+    raw_modules = cast(str | None, get_conf_option("modules"))
+    if raw_modules:
+        modules = raw_modules.split(",")
     else:
         modules = []
     return RedisConfig(
-        host=get_conf_option("host"),
+        host=cast(str, get_conf_option("host")),
         port=int(port) if port else None,
-        port_search_count=int(get_conf_option("port_search_count")),
-        username=get_conf_option("username"),
-        password=get_conf_option("password"),
-        exec=get_conf_option("exec"),
-        timeout=int(get_conf_option("timeout")),
-        loglevel=get_conf_option("loglevel"),
-        db_count=int(get_conf_option("db_count")),
-        save=get_conf_option("save"),
+        port_search_count=int(cast(int | str, get_conf_option("port_search_count"))),
+        username=cast(str, get_conf_option("username")),
+        password=cast(str, get_conf_option("password")),
+        exec=cast(str, get_conf_option("exec")),
+        timeout=int(cast(int | str, get_conf_option("timeout"))),
+        loglevel=cast(str, get_conf_option("loglevel")),
+        db_count=int(cast(int | str, get_conf_option("db_count"))),
+        save=cast(str, get_conf_option("save")),
         compression=bool(get_conf_option("compression")),
         rdbchecksum=bool(get_conf_option("rdbchecksum")),
         syslog=bool(get_conf_option("syslog")),
         decode=bool(get_conf_option("decode")),
-        datadir=get_conf_option("datadir"),
+        datadir=cast(str, get_conf_option("datadir")),
         modules=modules,
-        options=get_conf_option("options") or [],
+        options=cast(list[str] | None, get_conf_option("options")) or [],
     )

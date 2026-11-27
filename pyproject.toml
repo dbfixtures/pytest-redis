@@ -87,6 +87,7 @@ convention = "pep257"
 
 [tool.ruff.lint]
 select = [
+    "ANN401", # flake8-annotations: disallow typing.Any
     "D",   # pydocstyle
     "E",   # pycodestyle
     "F",   # pyflakes
