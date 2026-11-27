@@ -19,7 +19,7 @@
 
 from shutil import which
 
-from pytest import Parser
+import pytest
 
 import pytest_redis.factories.client
 import pytest_redis.factories.client_async
@@ -53,7 +53,7 @@ _help_option = (
 )
 
 
-def pytest_addoption(parser: Parser) -> None:
+def pytest_addoption(parser: pytest.Parser) -> None:
     """Define configuration options."""
     parser.addini(name="redis_exec", help=_help_exec, default=which("redis-server"))
     parser.addini(name="redis_host", help=_help_host, default="127.0.0.1")
