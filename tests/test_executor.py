@@ -133,7 +133,7 @@ def test_old_redis_version(
     """Test how fixture behaves in case of old redis version."""
     config = get_config(request)
     tmpdir = tmp_path_factory.mktemp("pytest-redis-test-test_old_redis_version")
-    with mock.patch("os.popen", lambda *args: StringIO(version)):
+    with mock.patch("os.popen", lambda *_args: StringIO(version)):
         with pytest.raises(RedisUnsupported):
             redis_port = get_port(None)
             assert redis_port
@@ -244,7 +244,8 @@ def test_redis_modules_option(request: FixtureRequest, tmp_path_factory: TempPat
     )
     try:
         with pytest.raises(
-            ProcessExitedWithError, match="--loadmodule nonexistent.so --loadmodule nonexistent2.so"
+            ProcessExitedWithError,
+            match=re.escape("--loadmodule nonexistent.so --loadmodule nonexistent2.so"),
         ):
             redis_exec.start()
 
@@ -357,7 +358,7 @@ def test_redis_exec_username_acl_arguments(monkeypatch: pytest.MonkeyPatch, tmp_
     captured_command: list[str] = []
     monkeypatch.setattr(
         "mirakuru.SimpleExecutor.__init__",
-        lambda self, command, *args, **kwargs: captured_command.extend(command),
+        lambda _self, command, *_args, **_kwargs: captured_command.extend(command),
     )
 
     RedisExecutor(

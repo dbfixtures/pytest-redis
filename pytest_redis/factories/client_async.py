@@ -29,6 +29,7 @@ def _unavailable_stub() -> Callable[[pytest.FixtureRequest], AsyncIterator[Redis
     @pytest.fixture
     def redisdb_async_stub(request: pytest.FixtureRequest) -> AsyncIterator[Redis]:
         """Raise ImportError, as async fixtures are unavailable in this environment."""
+        del request
         raise ImportError(
             "pytest-asyncio is required for async fixtures. "
             "Install it with: pip install 'pytest-redis[async]'"

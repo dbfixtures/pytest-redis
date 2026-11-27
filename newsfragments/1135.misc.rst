@@ -1,0 +1,1 @@
+Enable Ruff ``ARG``, ``B``, ``BLE``, ``DTZ``, ``PGH``, ``PLE``, ``PLW``, ``RUF``, and ``T10`` lint rules.
