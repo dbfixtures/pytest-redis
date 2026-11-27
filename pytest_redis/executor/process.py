@@ -281,7 +281,7 @@ class RedisExecutor(TCPExecutor):
     @property
     def version(self) -> Any:
         """Return redis version."""
-        with os.popen(f"{self.executable} --version") as version_output:
+        with os.popen(f"{self.executable} --version") as version_output:  # ty: ignore[deprecated]
             version_string = version_output.read()
         if not version_string:
             raise RedisMisconfigured(
