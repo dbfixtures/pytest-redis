@@ -1,0 +1,1 @@
+Enable Ruff ``TRY`` (tryceratops) lint rules.
