@@ -249,7 +249,7 @@ def test_redis_modules_option(request: FixtureRequest, tmp_path_factory: TempPat
             redis_exec.start()
 
         logfilename = redis_exec.command_parts[redis_exec.command_parts.index("--logfile") + 1]
-        with open(logfilename) as logfile:
+        with Path(logfilename).open() as logfile:
             logfile_text = logfile.read()
         assert (
             "# Module nonexistent.so failed to load: nonexistent.so: cannot open shared object file"
